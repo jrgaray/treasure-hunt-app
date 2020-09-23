@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ItemList extends StatelessWidget {
-  const ItemList({Key key, this.items}) : super(key: key);
+  const ItemList({Key key, this.items, this.onTap}) : super(key: key);
   final List items;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class ItemList extends StatelessWidget {
           leading: items[index].userIcon ?? null,
           title: Text(items[index].title),
           subtitle: Text(items[index].description ?? null),
-          onTap: () => print('do an action'),
+          onTap: () => onTap(context, index),
         );
       },
       itemCount: items.length,

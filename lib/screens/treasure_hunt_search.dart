@@ -11,7 +11,7 @@ class TreasureHuntSearch extends HookWidget {
   Widget build(BuildContext context) {
     final Function addTreasureHunt = ModalRoute.of(context).settings.arguments;
 
-    /// On tap,
+    /// On tap event handler. Adds a treasure hunt
     Function _onTap(treasureHunt) => () {
           addTreasureHunt(treasureHunt);
           Navigator.pop(context);

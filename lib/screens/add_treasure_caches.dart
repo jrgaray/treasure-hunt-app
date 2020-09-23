@@ -4,6 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
+import 'package:treasure_hunt/screens/edit_treasure_chart.dart';
+import 'package:treasure_hunt/screens/root.dart';
 import 'package:treasure_hunt/state/treasure_chart_state.dart';
 import 'package:uuid/uuid.dart';
 import '../utils/checkLocationService.dart';
@@ -15,54 +17,38 @@ class AddTreasureCaches extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Declare location and state objects needed.
     final Location location = new Location();
     final state = context.select((TreasureChartState state) => ({
           'markers': state.treasureCharts.last.markers,
           'polyline': state.treasureCharts.last.polylines
         }));
-    List<Marker> _markers = state['markers'];
-    List<Polyline> _polylines = state['polyline'];
+    final _markers = state['markers'], _polylines = state['polyline'];
 
-    Map retrieveHuntInfo(chartId, cacheId) {
-      // Get the chart state.
-      final chartState = context.read<TreasureChartState>();
-      // Get the treasureHunt.
-      final treasureHunt = chartState.treasureCharts
-          .firstWhere((element) => element.id == chartId);
-
-      // Get the index of the treasure hunt.
-      final indexOfHunt = chartState.treasureCharts.indexOf(treasureHunt);
-      // return [chartState, treasureHunt, indexOfHunt];
-      return {
-        'treasureHunt': treasureHunt,
-        'indexOfHunt': indexOfHunt,
-        'chartState': chartState
-      };
-    }
-
-    void _onMarkerDrag(value, chartId, cacheId) {
-      final huntInfo = retrieveHuntInfo(chartId, cacheId);
+    /// Event listener for when a marker is dragged. Updates the state of the
+    /// treasure hunt as well as google maps.
+    LatLng _onMarkerDrag(LatLng value, String chartId, String cacheId) {
+      final huntInfo =
+          context.read<TreasureChartState>().retrieveHuntInfo(chartId);
       final chart = huntInfo['treasureHunt'], index = huntInfo['indexOfHunt'];
-
-      // Updated the chart.
       chart.treasureCache.firstWhere((cache) => cache.id == cacheId).location =
           value;
-      // Update state.
       context.read<TreasureChartState>().updateTreasureChart(index, chart);
-
       return value;
     }
 
-    void _onMarkerTap(chartId, cacheId) => context
+    /// Event listerer for when the marker dragged. Removes a marker when tapped.
+    void _onMarkerTap(String chartId, String cacheId) => context
         .read<TreasureChartState>()
         .removeTreasureCache(chartId, cacheId);
 
-    void _addLocation({LatLng location, String chartId, String cacheId}) {
-      final huntInfo = retrieveHuntInfo(chartId, cacheId);
-      final hunt = huntInfo['treasureHunt'],
-          state = huntInfo['chartState'],
-          index = huntInfo['indexOfHunt'];
-      // Add a new cache to the
+    /// Event listener for then the map is tapped. Added a cache marker to the map.
+    void _onMapTap(LatLng location) {
+      final chartId = context.read<TreasureChartState>().treasureCharts.last.id;
+      final cacheId = new Uuid().v4();
+      final huntInfo =
+          context.read<TreasureChartState>().retrieveHuntInfo(chartId);
+      final hunt = huntInfo['treasureHunt'], index = huntInfo['indexOfHunt'];
       hunt.addTreasureCache(
         new TreasureCache(
             groupId: chartId,
@@ -71,19 +57,21 @@ class AddTreasureCaches extends HookWidget {
             onTap: _onMarkerTap,
             onDrag: (value) => _onMarkerDrag(value, chartId, cacheId)),
       );
-      state.updateTreasureChart(index, hunt);
+      context.read<TreasureChartState>().updateTreasureChart(index, hunt);
     }
 
-    void _onMapTap(latLing) async {
-      final chartId = context.read<TreasureChartState>().treasureCharts.last.id;
-      _addLocation(
-          location: latLing, chartId: chartId, cacheId: new Uuid().v4());
-    }
-
+    /// Opens a dialog for the user to commit to their changes and add clues.
     void _openNextDialog() async {
       await dialog(context, title: 'Done adding caches?', dialogOptions: [
         SimpleDialogOption(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.popUntil(
+                context, ModalRoute.withName(RootScreen.routeName));
+            final index =
+                context.read<TreasureChartState>().treasureCharts.length - 1;
+            Navigator.pushNamed(context, EditTreasureChart.routeName,
+                arguments: index);
+          },
           child: Text('Yes'),
         ),
         SimpleDialogOption(
@@ -93,7 +81,9 @@ class AddTreasureCaches extends HookWidget {
       ]);
     }
 
-    Widget _fabDisplay() {
+    /// Ensures the done floating action button only displays when a user has
+    /// added a marker.
+    Widget _shouldDisplayFab() {
       return _markers.length > 0
           ? FloatingActionButton(
               isExtended: true,
@@ -135,7 +125,7 @@ class AddTreasureCaches extends HookWidget {
             ),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
-            floatingActionButton: _fabDisplay());
+            floatingActionButton: _shouldDisplayFab());
       },
     );
   }

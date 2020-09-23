@@ -49,4 +49,19 @@ class TreasureChartState with ChangeNotifier {
         .removeWhere((cache) => cache.id == cacheId);
     notifyListeners();
   }
+
+  /// Retrieves a chart and it's index.
+  Map<String, dynamic> retrieveHuntInfo(String chartId) {
+    // Get the treasureHunt.
+    final treasureHunt =
+        _treasureCharts.firstWhere((element) => element.id == chartId);
+
+    // Get the index of the treasure hunt.
+    final indexOfHunt = treasureCharts.indexOf(treasureHunt);
+    // return [chartState, treasureHunt, indexOfHunt];
+    return {
+      'treasureHunt': treasureHunt,
+      'indexOfHunt': indexOfHunt,
+    };
+  }
 }
