@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:treasure_hunt/components/item_list.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:treasure_hunt/hooks/useHuntAndChart.dart';
 import 'package:provider/provider.dart';
 import 'package:treasure_hunt/state/treasure_chart_state.dart';
+import 'package:treasure_hunt/components/fab_selector.dart';
+import 'package:treasure_hunt/screens/new_treasure_chart.dart';
+import 'package:treasure_hunt/screens/treasure_hunt_search.dart';
 
 class RootScreen extends HookWidget {
   RootScreen({this.title});
@@ -14,6 +16,10 @@ class RootScreen extends HookWidget {
   Widget build(BuildContext context) {
     final charts =
         context.select((TreasureChartState state) => state.treasureCharts);
+    // TODO: Move treasure hunts state into provider.
+    final treasureHunts = useState([]);
+    void addTreasureHunt(newTreasureHunt) =>
+        treasureHunts.value = [...treasureHunts.value, newTreasureHunt];
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -29,17 +35,10 @@ class RootScreen extends HookWidget {
           Center(child: ItemList(items: treasureHunts.value)),
           Center(child: ItemList(items: charts)),
         ]),
-        floatingActionButton: Builder(builder: (context) {
-          return FloatingActionButton(
-            onPressed: () {
-              DefaultTabController.of(context).index == 0
-                  ? Navigator.pushNamed(context, 'search',
-                      arguments: addTreasureHunt)
-                  : Navigator.pushNamed(context, 'chartTreasure');
-            },
-            child: Icon(Icons.add),
-          );
-        }),
+        floatingActionButton: FabSelector([
+          {'name': TreasureHuntSearch.routeName, 'arguments': addTreasureHunt},
+          {'name': NewTreasureChart.routeName, 'arguments': null}
+        ]),
       ),
     );
   }
