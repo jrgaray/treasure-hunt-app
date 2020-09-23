@@ -10,7 +10,7 @@ import '../utils/checkLocationService.dart';
 import '../components/dialog.dart';
 import 'package:provider/provider.dart';
 
-class NewTreasureCache extends HookWidget {
+class AddTreasureCaches extends HookWidget {
   static const routeName = 'newCache';
 
   @override

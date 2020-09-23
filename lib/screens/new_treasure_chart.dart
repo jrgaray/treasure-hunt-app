@@ -5,8 +5,8 @@ import '../components/input.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
-class ChartTreasure extends HookWidget {
-  static const routeName = 'chartTreasure';
+class NewTreasureChart extends HookWidget {
+  static const routeName = 'newTreasureChart';
   static const String title = 'Create Treasure Hunt';
 
   @override
@@ -14,7 +14,7 @@ class ChartTreasure extends HookWidget {
     final _formKey = new GlobalKey<FormState>(debugLabel: 'chartTreasureKey');
     final newTreasureChart = new TreasureHunt();
     return Scaffold(
-      appBar: AppBar(title: Text(ChartTreasure.title)),
+      appBar: AppBar(title: Text(NewTreasureChart.title)),
       body: Container(
         child: Form(
           key: _formKey,
