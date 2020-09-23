@@ -12,12 +12,6 @@ Widget fabSelector(BuildContext context, routes) {
 
   return FloatingActionButton(
     onPressed: _onPressed,
-    // onPressed: () {
-    //   DefaultTabController.of(context).index == 0
-    //       ? Navigator.pushNamed(context, TreasureHuntSearch.routeName,
-    //           arguments: addTreasureHunt)
-    //       : Navigator.pushNamed(context, NewTreasureChart.routeName);
-    // },
     child: Icon(Icons.add),
   );
 }
