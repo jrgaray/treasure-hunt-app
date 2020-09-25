@@ -93,7 +93,7 @@ class TreasureHunt {
       return Marker(
         markerId: MarkerId(cache.id),
         position: cache.location,
-        // consumeTapEvents: true,
+        consumeTapEvents: true,
         onTap: () => cache.onTap(id, cache.id),
         icon: BitmapDescriptor.defaultMarkerWithHue(color),
         draggable: true,

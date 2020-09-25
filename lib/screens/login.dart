@@ -4,13 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:treasure_hunt/components/input.dart';
 import 'package:treasure_hunt/screens/root.dart';
 import 'package:treasure_hunt/state/user_state.dart';
+import 'package:treasure_hunt/utils/form_key.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Login extends HookWidget {
   Login({this.title});
   static const routeName = '/';
   static const String welcomeText = 'Welcome to Treasure Hunt';
   final String title;
-  final _key = new GlobalKey<FormState>(debugLabel: 'loginKey');
 
   @override
   Widget build(BuildContext context) {
@@ -30,18 +31,19 @@ class Login extends HookWidget {
     Widget form = Row(
       children: [
         Expanded(
-          child: Form(
-            key: _key,
+          child: FormBuilder(
+            key: key,
+            // autovalidate: true,
             child: Column(
               children: [
-                Input(
+                input(
                   label: 'Username',
                   onSaved: (value) {
                     context.read<UserState>().setUsername(value);
                   },
                   onError: (value) => value.isEmpty ? 'Cannot be empty.' : null,
                 ),
-                Input(
+                input(
                   label: 'Password',
                   onSaved: (value) =>
                       context.read<UserState>().setPassword(value),
@@ -49,8 +51,8 @@ class Login extends HookWidget {
                 ),
                 RaisedButton(
                   onPressed: () {
-                    if (_key.currentState.validate()) {
-                      _key.currentState.save();
+                    if (key.currentState.validate()) {
+                      key.currentState.save();
                       Navigator.popAndPushNamed(context, RootScreen.routeName);
                     }
                   },

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/state/treasure_chart_state.dart';
 import '../components/input.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:treasure_hunt/utils/form_key.dart';
 
 class NewTreasureChart extends HookWidget {
   static const routeName = 'newTreasureChart';
@@ -11,16 +13,15 @@ class NewTreasureChart extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = new GlobalKey<FormState>(debugLabel: 'chartTreasureKey');
     final newTreasureChart = new TreasureHunt();
     return Scaffold(
       appBar: AppBar(title: Text(NewTreasureChart.title)),
       body: Container(
-        child: Form(
-          key: _formKey,
+        child: FormBuilder(
+          key: key,
           child: Column(
             children: [
-              Input(
+              input(
                 label: 'Title',
                 onSaved: (newValue) => newTreasureChart.setTitle = newValue,
                 onError: (value) {
@@ -29,7 +30,7 @@ class NewTreasureChart extends HookWidget {
                   }
                 },
               ),
-              Input(
+              input(
                 label: 'Description',
                 onSaved: (newValue) =>
                     newTreasureChart.setDescription = newValue,
@@ -37,8 +38,8 @@ class NewTreasureChart extends HookWidget {
               ),
               RaisedButton(
                 onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    _formKey.currentState.save();
+                  if (key.currentState.validate()) {
+                    key.currentState.save();
                     newTreasureChart.setStart = new DateTime.now();
                     context
                         .read<TreasureChartState>()

@@ -43,8 +43,9 @@ class RootScreen extends HookWidget {
             )),
         body: TabBarView(children: [
           Center(
-              child: ItemList(items: treasureHunts.value, onTap: huntTreasure)),
-          Center(child: ItemList(items: charts, onTap: editChart)),
+              child: ItemList('hunt',
+                  items: treasureHunts.value, onTap: huntTreasure)),
+          Center(child: ItemList('chart', items: charts, onTap: editChart)),
         ]),
         floatingActionButton: FabSelector([
           {'name': TreasureHuntSearch.routeName, 'arguments': addTreasureHunt},
