@@ -5,9 +5,11 @@ import 'package:treasure_hunt/state/treasure_chart_state.dart';
 import 'package:provider/provider.dart';
 
 class ItemList extends HookWidget {
-  const ItemList(this.type, {Key key, this.items, this.onTap, this.chart});
+  const ItemList(this.type,
+      {Key key, this.items, this.onTap, this.chart, this.onLongPress});
   final List items;
   final Function onTap;
+  final Function onLongPress;
   final String type;
   final TreasureHunt chart;
 
@@ -32,6 +34,7 @@ class ItemList extends HookWidget {
 
             return ListTile(
               onTap: () => onTap(ctx, index, cacheInfo['clue']),
+              onLongPress: () => onLongPress(cacheInfo['cache']),
               subtitle: Text(cacheInfo['clue'] != null
                   ? cacheInfo['clue']
                   : 'Needs a clue!'),

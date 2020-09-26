@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:treasure_hunt/models/treasure_hunt.dart';
+import 'package:treasure_hunt/screens/add_treasure_caches.dart';
 import 'package:treasure_hunt/state/treasure_chart_state.dart';
 import '../components/input.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -44,9 +45,16 @@ class NewTreasureChart extends HookWidget {
                     context
                         .read<TreasureChartState>()
                         .addTreasureChart(newTreasureChart);
-                    Navigator.popAndPushNamed(context, 'newCache', arguments: {
-                      'chart': newTreasureChart,
-                    });
+                    Navigator.pushReplacementNamed(
+                        context, AddTreasureCaches.routeName,
+                        arguments: {
+                          'chart': newTreasureChart,
+                          'index': context
+                                  .read<TreasureChartState>()
+                                  .treasureCharts
+                                  .length -
+                              1
+                        });
                   }
                 },
                 child: Text('Continue'),

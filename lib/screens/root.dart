@@ -24,6 +24,7 @@ class RootScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('root rebuilt');
     final charts =
         context.select((TreasureChartState state) => state.treasureCharts);
     // TODO: Move treasure hunts state into provider.

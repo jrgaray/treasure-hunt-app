@@ -36,8 +36,12 @@ class TreasureChartState with ChangeNotifier {
   void addCache(String chartId, TreasureCache cache) {
     _treasureCharts
         .singleWhere((chart) => chart.id == chartId)
-        .treasureCache
-        .add(cache);
+        .setTreasureCaches = [
+      ..._treasureCharts
+          .singleWhere((element) => element.id == chartId)
+          .treasureCache,
+      cache
+    ];
     notifyListeners();
   }
 

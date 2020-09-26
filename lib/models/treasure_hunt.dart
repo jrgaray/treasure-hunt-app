@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../utils/icon_dictionary.dart';
 import './treasure_cache.dart';
@@ -83,38 +82,6 @@ class TreasureHunt {
 
   /// Returns the current cache the player is on.
   TreasureCache get currentCache => _treasureCaches[_currentCacheIndex];
-
-  List<Marker> get markers {
-    return _treasureCaches.asMap().entries.map((entry) {
-      final cache = entry.value;
-      final color = _treasureCaches.length - 1 == entry.key
-          ? BitmapDescriptor.hueRed
-          : BitmapDescriptor.hueAzure;
-      return Marker(
-        markerId: MarkerId(cache.id),
-        position: cache.location,
-        consumeTapEvents: true,
-        onTap: () => cache.onTap(id, cache.id),
-        icon: BitmapDescriptor.defaultMarkerWithHue(color),
-        draggable: true,
-        onDragEnd: cache.onDrag,
-        // infoWindow:
-        //     InfoWindow(title: cache.location.toString(), snippet: cache.clue),
-      );
-    }).toList();
-  }
-
-  List<Polyline> get polylines => [
-        Polyline(
-          polylineId: PolylineId('$_title: $_description'),
-          jointType: JointType.round,
-          points: _treasureCaches
-              .map((TreasureCache cache) => cache.location)
-              .toList(),
-        )
-      ];
-  // List<LatLng> get treasureCacheLocations =>
-  //     _treasureCaches.map((cache) => cache.location).toList();
 
   // ************************************************************************
   //                                SETTERS
