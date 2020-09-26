@@ -21,7 +21,7 @@ class TreasureHuntSearch extends HookWidget {
       appBar: AppBar(title: Text('Search')),
       body: Container(
         child: ListView(
-          children: newTreasureHunts
+          children: newTreasureHunts()
               .map((treasureHunt) => ListTile(
                     title: Text(treasureHunt.title),
                     subtitle: Text(treasureHunt.description),

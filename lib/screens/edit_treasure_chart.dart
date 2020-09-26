@@ -80,6 +80,39 @@ class EditTreasureChart extends HookWidget {
           ]);
     }
 
+    final hasClues = caches.every((cache) => cache.clue != null);
+
+    void _onPressed() async {
+      if (!hasClues) {
+        await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Add clues to all your caches yo'),
+          ),
+        );
+        return;
+      }
+      await dialog(
+        context,
+        title: 'Publish chart?\nOnce you publish, you cannot edit your chart.',
+        dialogOptions: [
+          SimpleDialogOption(
+            child: Text('Publish'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          SimpleDialogOption(
+            child: Text('Not Yet'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Treasure Chart'),
@@ -93,24 +126,31 @@ class EditTreasureChart extends HookWidget {
         ],
       ),
       body: Container(
-          child: ListView.builder(
-        itemBuilder: (context, index) {
-          return ListTile(
-            // onTap: () => print(index),
-            onTap: () => onTap(index),
-            onLongPress: () => onLongPress(caches[index]),
-            subtitle: Text(caches[index].clue != null
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            String subtitleSelector() => caches[index].clue != null
                 ? caches[index].clue
-                : 'Needs a clue!'),
-            title: Text(
-                'Latitude: ${caches[index].location.latitude},\nLongitude: ${caches[index].location.longitude}'),
-            leading: CircleAvatar(
-              child: Text('${index + 1}'),
-            ),
-          );
-        },
-        itemCount: caches.length,
-      )),
+                : 'Needs a clue!';
+            return ListTile(
+              onTap: () => onTap(index),
+              onLongPress: () => onLongPress(caches[index]),
+              subtitle: Text(subtitleSelector()),
+              title: Text(
+                  'Latitude: ${caches[index].location.latitude},\nLongitude: ${caches[index].location.longitude}'),
+              leading: CircleAvatar(
+                child: Text('${index + 1}'),
+              ),
+            );
+          },
+          itemCount: caches.length,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: hasClues ? Colors.blue : Colors.grey,
+        child: Icon(Icons.publish),
+        onPressed: _onPressed,
+      ),
     );
   }
 }

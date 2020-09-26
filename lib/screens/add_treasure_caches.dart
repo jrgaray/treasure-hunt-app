@@ -21,6 +21,7 @@ class AddTreasureCaches extends HookWidget {
     Map args = ModalRoute.of(context).settings.arguments;
     int chartIndex = args['index'];
     TreasureHunt chart = args['chart'];
+
     // Declare location and state objects needed.
     final Location location = new Location();
     context.watch<TreasureChartState>();
@@ -34,38 +35,20 @@ class AddTreasureCaches extends HookWidget {
       return value;
     }
 
-    /// Event listener for when a marker is dragged. Updates the state of the
-    /// treasure hunt as well as google maps.
-    LatLng _onMarkerDrag(
-        BuildContext context, LatLng value, String chartId, String cacheId) {
-      chart.treasureCache.firstWhere((cache) => cache.id == cacheId).location =
-          value;
-      context.read<TreasureChartState>().updateTreasureChart(chartIndex, chart);
-      return value;
-    }
-
     /// Event listerer for when the marker dragged. Removes a marker when tapped.
     void _onTap(String cacheId) => context
         .read<TreasureChartState>()
         .removeTreasureCache(chart.id, cacheId);
-
-    /// Event listerer for when the marker dragged. Removes a marker when tapped.
-    void _onMarkerTap(BuildContext context, String chartId, String cacheId) =>
-        context
-            .read<TreasureChartState>()
-            .removeTreasureCache(chartId, cacheId);
 
     /// Event listener for then the map is tapped. Added a cache marker to the map.
     void _onMapTap(LatLng location) {
       final cacheId = new Uuid().v4();
       chart.addTreasureCache(
         new TreasureCache(
-            groupId: chart.id,
-            id: cacheId,
-            location: location,
-            onTap: _onMarkerTap,
-            onDrag: (context) =>
-                (value) => _onMarkerDrag(context, value, chart.id, cacheId)),
+          groupId: chart.id,
+          id: cacheId,
+          location: location,
+        ),
       );
       context.read<TreasureChartState>().updateTreasureChart(chartIndex, chart);
     }
@@ -103,29 +86,29 @@ class AddTreasureCaches extends HookWidget {
           : null;
     }
 
+    double colorSelector(entry) => chart.treasureCache.length - 1 == entry.key
+        ? BitmapDescriptor.hueRed
+        : BitmapDescriptor.hueAzure;
+
     /// Creates the markers for google maps from the treasure cache data.
-    Set<Marker> createMarkers() {
+    Set<Marker> _createMarkers() {
       return chart.treasureCache.asMap().entries.map((entry) {
-        final cache = entry.value;
-        final color = chart.treasureCache.length - 1 == entry.key
-            ? BitmapDescriptor.hueRed
-            : BitmapDescriptor.hueAzure;
+        final cacheId = entry.value.id;
         return Marker(
-          markerId: MarkerId(cache.id),
-          position: cache.location,
+          markerId: MarkerId(cacheId),
+          position: entry.value.location,
           consumeTapEvents: true,
-          onTap: () => _onTap(cache.id),
-          // onTap: () => cache.onTap(context, chart.id, cache.id),
-          icon: BitmapDescriptor.defaultMarkerWithHue(color),
+          onTap: () => _onTap(cacheId),
+          icon: BitmapDescriptor.defaultMarkerWithHue(colorSelector(entry)),
           draggable: true,
-          onDragEnd: (value) => _onDragEnd(value, cache.id),
+          onDragEnd: (value) => _onDragEnd(value, cacheId),
         );
       }).toSet();
     }
 
     /// Creates the polyline that connects all the markers from the treasure
     /// cache data.
-    Set<Polyline> createPolyline() => [
+    Set<Polyline> _createPolyline() => [
           Polyline(
               polylineId: PolylineId('rolypoly'),
               jointType: JointType.round,
@@ -133,6 +116,10 @@ class AddTreasureCaches extends HookWidget {
                   .map((TreasureCache cache) => cache.location)
                   .toList())
         ].toSet();
+
+    LatLng _setInitialCameraTarget(snapshot) => chart.treasureCache.length > 0
+        ? chart.treasureCache.last.location
+        : LatLng(snapshot.data.latitude, snapshot.data.longitude);
 
     return FutureBuilder(
       future: checkLocationService(location),
@@ -149,18 +136,16 @@ class AddTreasureCaches extends HookWidget {
               automaticallyImplyLeading: false,
             ),
             body: GoogleMap(
-              markers: createMarkers(),
+              markers: _createMarkers(),
               mapToolbarEnabled: false,
               onTap: _onMapTap,
               mapType: MapType.satellite,
               myLocationButtonEnabled: true,
               myLocationEnabled: true,
               zoomControlsEnabled: false,
-              polylines: createPolyline(),
+              polylines: _createPolyline(),
               initialCameraPosition: CameraPosition(
-                target: chart.treasureCache.length > 0
-                    ? chart.treasureCache.last.location
-                    : LatLng(snapshot.data.latitude, snapshot.data.longitude),
+                target: _setInitialCameraTarget(snapshot),
                 zoom: 17,
               ),
             ),

@@ -7,6 +7,7 @@ import 'package:treasure_hunt/state/treasure_chart_state.dart';
 import 'package:treasure_hunt/components/fab_selector.dart';
 import 'package:treasure_hunt/screens/new_treasure_chart.dart';
 import 'package:treasure_hunt/screens/treasure_hunt_search.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RootScreen extends HookWidget {
   RootScreen({this.title});
@@ -24,7 +25,6 @@ class RootScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('root rebuilt');
     final charts =
         context.select((TreasureChartState state) => state.treasureCharts);
     // TODO: Move treasure hunts state into provider.
@@ -42,12 +42,21 @@ class RootScreen extends HookWidget {
                 Tab(text: 'Create', icon: Icon(Icons.create)),
               ],
             )),
-        body: TabBarView(children: [
-          Center(
-              child: ItemList('hunt',
-                  items: treasureHunts.value, onTap: huntTreasure)),
-          Center(child: ItemList('chart', items: charts, onTap: editChart)),
-        ]),
+        body: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('charts').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              snapshot.data.documents
+                  .forEach((document) => print(document.data()['test']));
+            }
+            return TabBarView(children: [
+              Center(
+                  child: ItemList('hunt',
+                      items: treasureHunts.value, onTap: huntTreasure)),
+              Center(child: ItemList('chart', items: charts, onTap: editChart)),
+            ]);
+          },
+        ),
         floatingActionButton: FabSelector([
           {'name': TreasureHuntSearch.routeName, 'arguments': addTreasureHunt},
           {'name': NewTreasureChart.routeName, 'arguments': null}

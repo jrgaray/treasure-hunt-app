@@ -5,14 +5,10 @@ class TreasureCache {
   String groupId;
   String clue;
   LatLng location;
-  Function onDrag;
-  Function onTap;
   TreasureCache({
     this.id,
     this.groupId,
     this.clue,
     this.location,
-    this.onDrag,
-    this.onTap,
   });
 }
