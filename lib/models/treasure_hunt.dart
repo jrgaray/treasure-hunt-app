@@ -28,6 +28,8 @@ class TreasureHunt {
   /// The current cache the user is at.
   int _currentCacheIndex;
 
+  bool _isPublished;
+
   /// Constructor for the TreasureHunt. All parameters are optional. Creates a
   /// Treasure Hunt for user's to hunt.
   TreasureHunt({
@@ -40,34 +42,44 @@ class TreasureHunt {
     int currentCacheIndex,
   })  : _id = Uuid().v4(),
         _title = title,
-        _creator = creator,
+        _creator = creator ??
+            User(
+              birthday: new DateTime(1990, 4, 15),
+              firstName: 'Jose',
+              lastName: 'Morris-Garay',
+              icon: 'ac_unit',
+              url: null,
+            ),
         _description = description,
         _start = start,
         _end = end,
         _treasureCaches = treasureCaches ?? [],
-        _currentCacheIndex = 0;
+        _currentCacheIndex = 0,
+        _isPublished = false;
+  TreasureHunt.fromFirebase({
+    @required String id,
+    @required User creator,
+    @required String description,
+    @required List<TreasureCache> caches,
+    DateTime start,
+  })  : _id = id,
+        _creator = creator,
+        _description = description,
+        _start = start,
+        _treasureCaches = caches;
 
   // ************************************************************************
   //                                GETTERS
   // ************************************************************************
 
-  /// Returns the title of the treasure hunt.
+  /// Returns the id of the treasure hunt.
   String get id => _id;
 
   /// Returns the title of the treasure hunt.
   String get title => _title;
 
-  /// Returns a user's avatar url.
-  String get userAvatarUrl => _creator?.avatarUrl;
-
-  /// Returns the creator's user name.
-  String get creatorUserName => _creator?.fullName;
-
-  /// Returns the creator's icon.
-  Icon get userIcon => Icon(icons[_creator?.icon]);
-
-  /// Returns the creator's initials
-  String get userInitials => _creator?.initials;
+  /// Returns of User type.
+  User get creator => _creator;
 
   /// Returns a user's avatar url.
   String get description => _description;
@@ -82,6 +94,8 @@ class TreasureHunt {
 
   /// Returns the current cache the player is on.
   TreasureCache get currentCache => _treasureCaches[_currentCacheIndex];
+
+  bool get isPublished => _isPublished;
 
   // ************************************************************************
   //                                SETTERS
@@ -105,6 +119,9 @@ class TreasureHunt {
   /// Set TreasureChart caches.
   set setTreasureCaches(List<TreasureCache> treasureCaches) =>
       _treasureCaches = treasureCaches;
+
+  /// Set the status of the treasure hunt.
+  set setIsPublished(bool isPublished) => _isPublished = isPublished;
 
   // ************************************************************************
   //                                METHODS

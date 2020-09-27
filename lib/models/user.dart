@@ -1,5 +1,10 @@
 class User {
-  User({firstName, lastName, url, icon, birthday})
+  User(
+      {String firstName,
+      String lastName,
+      String url,
+      String icon,
+      DateTime birthday})
       : _firstName = firstName,
         _lastName = lastName,
         _avatarUrl = url,
@@ -11,6 +16,8 @@ class User {
   String _avatarUrl;
   DateTime _birthday;
 
+  String get firstName => _firstName;
+  String get lastName => _lastName;
   String get avatarUrl => _avatarUrl;
   String get fullName => '$_firstName $_lastName';
   String get initials =>

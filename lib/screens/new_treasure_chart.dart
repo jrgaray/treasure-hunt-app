@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:treasure_hunt/models/treasure_hunt.dart';
+import 'package:treasure_hunt/models/treasure_hunt_dto.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';
 import 'package:treasure_hunt/state/treasure_chart_state.dart';
 import '../components/input.dart';
@@ -38,13 +40,17 @@ class NewTreasureChart extends HookWidget {
                 onError: (value) => value.isEmpty ? 'Cannot be empty.' : null,
               ),
               RaisedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (key.currentState.validate()) {
                     key.currentState.save();
                     newTreasureChart.setStart = new DateTime.now();
                     context
                         .read<TreasureChartState>()
                         .addTreasureChart(newTreasureChart);
+                    await FirebaseFirestore.instance
+                        .collection('charts')
+                        .doc(newTreasureChart.id)
+                        .set(TreasureHuntDTO().convertToMap(newTreasureChart));
                     Navigator.pushReplacementNamed(
                         context, AddTreasureCaches.routeName,
                         arguments: {

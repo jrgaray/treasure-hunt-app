@@ -49,7 +49,7 @@ class ItemList extends HookWidget {
         default:
           final item = items[index];
           return ListTile(
-            leading: item.userIcon ?? null,
+            leading: Text(item.creator.icon) ?? null,
             title: Text(item.title),
             subtitle: Text(item.description ?? null),
             onTap: () => onTap(context, index),
