@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:functional_widget_annotation/functional_widget_annotation.dart';
+import 'package:flutter/foundation.dart';
 part 'fab_selector.g.dart';
 
-@swidget
 Widget fabSelector(BuildContext context, routes) {
   void _onPressed() {
     final index = DefaultTabController.of(context).index;

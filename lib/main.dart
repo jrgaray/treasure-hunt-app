@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:treasure_hunt/app.dart';
-import 'package:treasure_hunt/state/treasure_chart_state.dart';
+import 'package:treasure_hunt/firebase/store.dart';
+import 'package:treasure_hunt/models/treasure_hunt.dart';
+import 'package:treasure_hunt/models/treasure_search.dart';
 import 'package:treasure_hunt/state/user_state.dart';
 
 void main() async {
@@ -12,7 +14,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserState()),
-        ChangeNotifierProvider(create: (_) => TreasureChartState()),
+        StreamProvider<List<TreasureHunt>>.value(value: chartStream()),
+        StreamProvider<List<TreasureSearch>>.value(value: huntStream()),
       ],
       child: App(),
     ),

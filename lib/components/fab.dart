@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 part 'fab.g.dart';
 
-@swidget
 Widget fab(BuildContext context, String routeName, Function arguments) {
   _onPressed() => Navigator.pushNamed(context, routeName, arguments: arguments);
   return FloatingActionButton(

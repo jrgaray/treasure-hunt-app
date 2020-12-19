@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../utils/icon_dictionary.dart';
@@ -5,6 +6,7 @@ import './treasure_cache.dart';
 import './user.dart';
 
 class TreasureHunt {
+  /// Id of the treasure hunt.
   String _id;
 
   /// Title of the treasure hunt.
@@ -19,33 +21,39 @@ class TreasureHunt {
   /// The treasure hunt's start date.
   DateTime _start;
 
-  /// The treasure hunt's end date.
-  DateTime _end;
-
   /// List of all this treasure hunt's caches.
   List<TreasureCache> _treasureCaches;
 
-  /// The current cache the user is at.
-  int _currentCacheIndex;
+  /// First clue to kick off the treasure hunt.
+  String _initialClue;
 
   /// Constructor for the TreasureHunt. All parameters are optional. Creates a
   /// Treasure Hunt for user's to hunt.
   TreasureHunt({
+    String id,
     String title,
     User creator,
     String description,
+    String initialClue,
     DateTime start,
-    DateTime end,
     List<TreasureCache> treasureCaches,
-    int currentCacheIndex,
-  })  : _id = Uuid().v4(),
+  })  : _id = id ?? Uuid().v4(),
         _title = title,
         _creator = creator,
         _description = description,
         _start = start,
-        _end = end,
         _treasureCaches = treasureCaches ?? [],
-        _currentCacheIndex = 0;
+        _initialClue = initialClue;
+
+  TreasureHunt.copy(TreasureHunt original) {
+    _id = original.id;
+    _title = original.title;
+    _creator = original._creator;
+    _description = original._description;
+    _start = original.startDate;
+    _treasureCaches = original.treasureCache;
+    _initialClue = original.initialClue;
+  }
 
   // ************************************************************************
   //                                GETTERS
@@ -75,13 +83,11 @@ class TreasureHunt {
   /// Returns the treasure hunt start date.
   DateTime get startDate => _start;
 
-  /// Returns the treasure hunt end date.
-  DateTime get endDate => _end;
-
+  /// Returns a list of treasure caches
   List<TreasureCache> get treasureCache => _treasureCaches;
 
-  /// Returns the current cache the player is on.
-  TreasureCache get currentCache => _treasureCaches[_currentCacheIndex];
+  /// Returns the initial clue to start the treasure hunt.
+  String get initialClue => _initialClue;
 
   // ************************************************************************
   //                                SETTERS
@@ -99,12 +105,12 @@ class TreasureHunt {
   /// Set TreasureChart start date.
   set setStart(DateTime start) => _start = start;
 
-  /// Set TreasureChart end date.
-  set setEnd(DateTime end) => _end = end;
-
   /// Set TreasureChart caches.
   set setTreasureCaches(List<TreasureCache> treasureCaches) =>
       _treasureCaches = treasureCaches;
+
+  /// Set TreasureChart initialClue.
+  set setInitialClue(String clue) => _initialClue = clue;
 
   // ************************************************************************
   //                                METHODS
@@ -112,9 +118,20 @@ class TreasureHunt {
   /// Add a cache to the treasure hunt.
   void addTreasureCache(TreasureCache cache) => _treasureCaches.add(cache);
 
-  /// Moves the treasure hunt along to the next cache.
-  void nextCache() {
-    if (_currentCacheIndex <= 0 && _currentCacheIndex > _treasureCaches.length)
-      _currentCacheIndex++;
-  }
+  Map<String, dynamic> toMap() => {
+        "id": _id,
+        "initialClue": _initialClue,
+        "title": _title,
+        // "creator": _creator.toMap(),
+        "description": description,
+        "treasureCaches": treasureCache
+            .map((cache) => {
+                  "id": cache.id,
+                  "groupId": id,
+                  "clue": cache.clue,
+                  "location": GeoPoint(
+                      cache.location.latitude, cache.location.longitude)
+                })
+            .toList()
+      };
 }

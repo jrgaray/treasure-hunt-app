@@ -18,7 +18,6 @@ final firstHunt = new TreasureHunt(
   ),
   description: 'A present to my goose.',
   start: DateTime.now(),
-  end: DateTime.now().add(new Duration(days: 30)),
 );
 
 final secondHunt = new TreasureHunt(
@@ -32,7 +31,6 @@ final secondHunt = new TreasureHunt(
   ),
   description: 'A present to my bear.',
   start: DateTime.now(),
-  end: DateTime.now().add(new Duration(days: 30)),
 );
 
 final cacheOne = new TreasureCache(
