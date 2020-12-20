@@ -1,5 +1,5 @@
 class TreasureUser {
-  TreasureUser({firstName, lastName, url, icon, birthday})
+  TreasureUser({firstName, lastName, url, birthday})
       : _firstName = firstName,
         _lastName = lastName,
         _avatarUrl = url,

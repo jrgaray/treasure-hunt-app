@@ -3,28 +3,28 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
 import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/models/treasure_search.dart';
+import 'package:treasure_hunt/models/treasure_user.dart';
 
-final firebaseInstance = FirebaseFirestore.instance;
+final firestoreInstance = FirebaseFirestore.instance;
 
-final addChart = (Map data) => firebaseInstance.collection("charts").add(data);
+final addChart = (Map data) => firestoreInstance.collection("charts").add(data);
 void deleteCache(
     TreasureHunt chart, TreasureCache cache, Function setChart) async {
-  await firebaseInstance.collection("charts").doc(chart.id).update({
+  await firestoreInstance.collection("charts").doc(chart.id).update({
     "treasureCaches": FieldValue.arrayRemove([cache.toFirebaseObject()])
   });
-  final caches = [...chart.treasureCache];
-  caches.removeWhere((TreasureCache tCache) => tCache.id == cache.id);
-  final newChart = new TreasureHunt.copy(chart);
-  newChart.setTreasureCaches = caches;
-  // setChart(newChart);
+  // final caches = [...chart.treasureCache];
+  // caches.removeWhere((TreasureCache tCache) => tCache.id == cache.id);
+  // final newChart = new TreasureHunt.copy(chart);
+  // newChart.setTreasureCaches = caches;
 }
 
 void saveClue(String clue, String chartId, int cacheIndex) async {
   final chartDoc =
-      await firebaseInstance.collection("charts").doc(chartId).get();
+      await firestoreInstance.collection("charts").doc(chartId).get();
   final chartData = chartDoc.data();
   chartData['treasureCaches'][cacheIndex]['clue'] = clue;
-  await firebaseInstance
+  await firestoreInstance
       .collection('charts')
       .doc(chartId)
       .update({"treasureCaches": chartData["treasureCaches"]});
@@ -78,14 +78,15 @@ List<TreasureHunt> Function(QuerySnapshot) convertToHunt =
       )
       .toList();
 };
+void deleteChart(int index, List<TreasureHunt> charts) async =>
+    await firestoreInstance.collection("charts").doc(charts[index].id).delete();
 
-// final stream = () => firebaseInstance.collection("charts").snapshots();
-final chartStream = () => firebaseInstance
+final chartStream = () => firestoreInstance
     .collection("charts")
     .snapshots()
     ?.map((QuerySnapshot snapshot) => convertToHunt(snapshot));
 
-final huntStream = () => firebaseInstance
+final huntStream = () => firestoreInstance
     .collection("hunts")
     .snapshots()
     ?.map((QuerySnapshot snapshot) => convertToSearch(snapshot));
@@ -98,7 +99,7 @@ Future<void> addUserDataToStore({
   String avatarUrl,
   String email,
 }) async {
-  await firebaseInstance.collection("user").doc(uid).set({
+  await firestoreInstance.collection("user").doc(uid).set({
     "uid": uid,
     "firstName": firstName,
     "lastName": lastName,
@@ -107,3 +108,5 @@ Future<void> addUserDataToStore({
     "email": email,
   });
 }
+
+Future<TreasureUser> getUserData(String uid) {}

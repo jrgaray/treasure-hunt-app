@@ -40,10 +40,6 @@ class RootScreen extends HookWidget {
               Navigator.pushNamed(context, EditTreasureChart.routeName,
                   arguments: charts[i]);
             };
-    void deleteChart(int index) async => await firebaseInstance
-        .collection("charts")
-        .doc(charts[index].id)
-        .delete();
 
     return DefaultTabController(
       length: 2,
@@ -106,7 +102,7 @@ class RootScreen extends HookWidget {
                 'chart',
                 items: charts,
                 onTap: editChart(charts),
-                onLongPress: deleteChart,
+                onLongPress: (index) => deleteChart(index, charts),
               ),
             ),
           ],
