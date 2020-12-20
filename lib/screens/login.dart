@@ -1,12 +1,11 @@
-import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-import 'package:treasure_hunt/components/input.dart';
+import 'package:treasure_hunt/components/form_builder_text.dart';
+import 'package:treasure_hunt/firebase/auth.dart';
 import 'package:treasure_hunt/screens/create_account_screen.dart';
 import 'package:treasure_hunt/screens/root.dart';
-import 'package:treasure_hunt/state/user_state.dart';
 import 'package:treasure_hunt/utils/form_key.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -18,6 +17,13 @@ class Login extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<User>();
+    useEffect(() {
+      if (user != null)
+        Future.microtask(
+            () => Navigator.popAndPushNamed(context, RootScreen.routeName));
+      return;
+    }, [user]);
     Widget header = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -41,38 +47,39 @@ class Login extends HookWidget {
             key: key,
             child: Column(
               children: [
-                input(
-                  label: 'Username',
-                  onSaved: (value) {
-                    //
-                  },
-                  onError: (value) => value.isEmpty ? 'Cannot be empty.' : null,
-                ),
-                input(
-                  label: 'Password',
-                  onSaved: (value) =>
-                      context.read<UserState>().setPassword(value),
-                  onError: (value) => value.isEmpty ? 'Cannot be empty.' : null,
-                ),
+                FormBuilderText(attribute: "email", label: "Email"),
+                FormBuilderText(attribute: "password", label: "Password"),
                 Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: RaisedButton(
-                    onPressed: () {
-                      if (key.currentState.validate()) {
-                        key.currentState.save();
-                        Navigator.popAndPushNamed(
-                            context, RootScreen.routeName);
-                      }
-                    },
-                    child: Text('Submit'),
-                  ),
-                ),
+                    padding: EdgeInsets.only(top: 20),
+                    child: Builder(
+                      builder: (context) {
+                        return RaisedButton(
+                          onPressed: () async {
+                            try {
+                              if (key.currentState.validate()) {
+                                key.currentState.save();
+                                final fields = key.currentState.fields;
+                                await signIn(fields["email"].value,
+                                    fields["password"].value);
+                                // if (user != null)
+                                //   Navigator.popAndPushNamed(
+                                //       context, RootScreen.routeName);
+                              }
+                            } catch (error) {
+                              Scaffold.of(context).showSnackBar(
+                                  SnackBar(content: Text(error.message)));
+                            }
+                          },
+                          child: Text('Submit'),
+                        );
+                      },
+                    )),
                 Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: InkWell(
                     radius: 100,
                     highlightColor: Colors.blue,
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pushNamed(
                           context, CreateAccountScreen.routeName);
                     },

@@ -9,15 +9,14 @@ class FormBuilderText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: FormBuilderTextField(
-        autovalidateMode: AutovalidateMode.always,
         name: attribute,
         keyboardType: TextInputType.text,
         focusNode: FocusNode(skipTraversal: true),
         onTap: () => null,
-        validator: (String value) {
-          if (value.isEmpty) {
+        validator: (value) {
+          if (value == null || value.isEmpty) {
             return 'Field cannot be empty';
           }
         },

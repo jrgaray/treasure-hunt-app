@@ -5,6 +5,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:treasure_hunt/components/form_builder_text.dart';
+import 'package:treasure_hunt/firebase/auth.dart';
+import 'package:treasure_hunt/screens/root.dart';
 
 class CreateAccountForm extends HookWidget {
   const CreateAccountForm({Key key}) : super(key: key);
@@ -63,7 +65,7 @@ class CreateAccountForm extends HookWidget {
           FormBuilderText(attribute: 'first_name', label: "First Name"),
           FormBuilderText(attribute: 'last_name', label: "Last Name"),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: FormBuilderDateTimePicker(
               validator: (DateTime value) {
                 if (value == null) {
@@ -91,8 +93,28 @@ class CreateAccountForm extends HookWidget {
           FormBuilderText(attribute: 'email', label: "Email"),
           FormBuilderText(attribute: 'password', label: "Password"),
           RaisedButton(
-            onPressed: () {
-              print(key.currentState.validate());
+            onPressed: () async {
+              if (key.currentState.validate()) {
+                try {
+                  final fields = key.currentState.fields;
+                  await createUser(
+                      fields["email"].value,
+                      fields["password"].value,
+                      fields["first_name"].value,
+                      fields["last_name"].value,
+                      fields["birthday"].value,
+                      File(imageFile.value.path));
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text("Success!")));
+                  Future.delayed(Duration(milliseconds: 1500), () {
+                    Navigator.pop(context);
+                    Navigator.popAndPushNamed(context, RootScreen.routeName);
+                  });
+                } catch (error) {
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text(error.message)));
+                }
+              }
             },
             child: Text("Submit"),
           )
