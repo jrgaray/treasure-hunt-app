@@ -1,28 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:treasure_hunt/models/user.dart';
+import 'package:treasure_hunt/models/treasure_user.dart';
 
 class UserState with ChangeNotifier {
-  User _user;
-  String _username = '';
-  String _password = '';
+  TreasureUser _user;
 
-  User get user => _user;
-  String get username => _username;
-  String get password => _password;
+  TreasureUser get user => _user;
 
-  void setUser(User user) {
+  void setUser(TreasureUser user) {
     _user = user;
-    notifyListeners();
-  }
-
-  void setPassword(password) {
-    _password = password;
-    notifyListeners();
-  }
-
-  void setUsername(username) {
-    _username = username;
     notifyListeners();
   }
 }

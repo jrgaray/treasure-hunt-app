@@ -1,6 +1,6 @@
 import 'package:treasure_hunt/models/treasure_cache.dart';
 import 'package:treasure_hunt/models/treasure_hunt.dart';
-import 'package:treasure_hunt/models/user.dart';
+import 'package:treasure_hunt/models/treasure_user.dart';
 
 class TreasureSearch extends TreasureHunt {
   TreasureCache currentCache;
@@ -10,7 +10,7 @@ class TreasureSearch extends TreasureHunt {
   TreasureSearch({
     String id,
     String title,
-    User creator,
+    TreasureUser creator,
     String description,
     String initialClue,
     DateTime start,

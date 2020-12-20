@@ -103,13 +103,11 @@ class CreateAccountForm extends HookWidget {
                       fields["first_name"].value,
                       fields["last_name"].value,
                       fields["birthday"].value,
-                      File(imageFile.value.path));
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text("Success!")));
-                  Future.delayed(Duration(milliseconds: 1500), () {
-                    Navigator.pop(context);
-                    Navigator.popAndPushNamed(context, RootScreen.routeName);
-                  });
+                      imageFile.value == null
+                          ? imageFile.value
+                          : File(imageFile.value.path));
+                  Navigator.pop(context);
+                  Navigator.popAndPushNamed(context, RootScreen.routeName);
                 } catch (error) {
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text(error.message)));

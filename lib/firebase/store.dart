@@ -89,3 +89,21 @@ final huntStream = () => firebaseInstance
     .collection("hunts")
     .snapshots()
     ?.map((QuerySnapshot snapshot) => convertToSearch(snapshot));
+
+Future<void> addUserDataToStore({
+  String uid,
+  String firstName,
+  String lastName,
+  DateTime birthday,
+  String avatarUrl,
+  String email,
+}) async {
+  await firebaseInstance.collection("user").doc(uid).set({
+    "uid": uid,
+    "firstName": firstName,
+    "lastName": lastName,
+    "birthday": birthday,
+    "url": avatarUrl ?? "",
+    "email": email,
+  });
+}

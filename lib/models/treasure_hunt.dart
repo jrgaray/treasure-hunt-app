@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../utils/icon_dictionary.dart';
 import './treasure_cache.dart';
-import './user.dart';
+import 'treasure_user.dart';
 
 class TreasureHunt {
   /// Id of the treasure hunt.
@@ -13,7 +13,7 @@ class TreasureHunt {
   String _title;
 
   /// Creator of the treasure hunt.
-  User _creator;
+  TreasureUser _creator;
 
   /// A short description of the treasure hunt.
   String _description;
@@ -32,7 +32,7 @@ class TreasureHunt {
   TreasureHunt({
     String id,
     String title,
-    User creator,
+    TreasureUser creator,
     String description,
     String initialClue,
     DateTime start,
@@ -71,9 +71,6 @@ class TreasureHunt {
   /// Returns the creator's user name.
   String get creatorUserName => _creator?.fullName;
 
-  /// Returns the creator's icon.
-  Icon get userIcon => Icon(icons[_creator?.icon]);
-
   /// Returns the creator's initials
   String get userInitials => _creator?.initials;
 
@@ -97,7 +94,7 @@ class TreasureHunt {
   set setTitle(String title) => _title = title;
 
   /// Set TreasureChart creator.
-  set setCreator(User creator) => _creator = creator;
+  set setCreator(TreasureUser creator) => _creator = creator;
 
   /// Set TreasureChart description.
   set setDescription(String description) => _description = description;

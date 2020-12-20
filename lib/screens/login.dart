@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:treasure_hunt/components/form_builder_text.dart';
-import 'package:treasure_hunt/firebase/auth.dart';
+import 'package:treasure_hunt/components/submit_button.dart';
 import 'package:treasure_hunt/screens/create_account_screen.dart';
 import 'package:treasure_hunt/screens/root.dart';
-import 'package:treasure_hunt/utils/form_key.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Login extends HookWidget {
@@ -18,6 +17,7 @@ class Login extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<User>();
+    final key = GlobalKey<FormBuilderState>();
     useEffect(() {
       if (user != null)
         Future.microtask(
@@ -51,28 +51,8 @@ class Login extends HookWidget {
                 FormBuilderText(attribute: "password", label: "Password"),
                 Padding(
                     padding: EdgeInsets.only(top: 20),
-                    child: Builder(
-                      builder: (context) {
-                        return RaisedButton(
-                          onPressed: () async {
-                            try {
-                              if (key.currentState.validate()) {
-                                key.currentState.save();
-                                final fields = key.currentState.fields;
-                                await signIn(fields["email"].value,
-                                    fields["password"].value);
-                                // if (user != null)
-                                //   Navigator.popAndPushNamed(
-                                //       context, RootScreen.routeName);
-                              }
-                            } catch (error) {
-                              Scaffold.of(context).showSnackBar(
-                                  SnackBar(content: Text(error.message)));
-                            }
-                          },
-                          child: Text('Submit'),
-                        );
-                      },
+                    child: SubmitButton(
+                      formKey: key,
                     )),
                 Padding(
                   padding: EdgeInsets.only(top: 10),

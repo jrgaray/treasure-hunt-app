@@ -28,7 +28,7 @@ class TreasureHuntSearch extends HookWidget {
                     subtitle: Text(treasureHunt.description),
                     leading: CircleAvatar(
                       // backgroundImage: NetworkImage(treasureHunt.userAvatarUrl),
-                      child: treasureHunt.userIcon != null
+                      child: treasureHunt.userAvatarUrl != null
                           ? null
                           : Text(treasureHunt.userInitials),
                     ),
