@@ -13,7 +13,6 @@ class SubmitButton extends HookWidget {
       onPressed: () async {
         try {
           if (formKey.currentState.validate()) {
-            formKey.currentState.save();
             final fields = formKey.currentState.fields;
             await signIn(fields["email"].value, fields["password"].value);
           }

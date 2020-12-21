@@ -9,14 +9,19 @@ final firestoreInstance = FirebaseFirestore.instance;
 
 final addChart = (Map data) => firestoreInstance.collection("charts").add(data);
 void deleteCache(
-    TreasureHunt chart, TreasureCache cache, Function setChart) async {
-  await firestoreInstance.collection("charts").doc(chart.id).update({
-    "treasureCaches": FieldValue.arrayRemove([cache.toFirebaseObject()])
-  });
-  // final caches = [...chart.treasureCache];
-  // caches.removeWhere((TreasureCache tCache) => tCache.id == cache.id);
-  // final newChart = new TreasureHunt.copy(chart);
-  // newChart.setTreasureCaches = caches;
+  TreasureHunt chart,
+  TreasureCache cache,
+  Function setChart,
+) async {
+  await firestoreInstance.collection("charts").doc(chart.id).update(
+    {
+      "treasureCaches": FieldValue.arrayRemove(
+        [
+          cache.toFirebaseObject(),
+        ],
+      )
+    },
+  );
 }
 
 void saveClue(String clue, String chartId, int cacheIndex) async {
@@ -24,10 +29,11 @@ void saveClue(String clue, String chartId, int cacheIndex) async {
       await firestoreInstance.collection("charts").doc(chartId).get();
   final chartData = chartDoc.data();
   chartData['treasureCaches'][cacheIndex]['clue'] = clue;
-  await firestoreInstance
-      .collection('charts')
-      .doc(chartId)
-      .update({"treasureCaches": chartData["treasureCaches"]});
+  await firestoreInstance.collection('charts').doc(chartId).update(
+    {
+      "treasureCaches": chartData["treasureCaches"],
+    },
+  );
 }
 
 List<TreasureSearch> Function(QuerySnapshot) convertToSearch = (snapshot) {
@@ -40,15 +46,17 @@ List<TreasureSearch> Function(QuerySnapshot) convertToSearch = (snapshot) {
           initialClue: firestoreHunt["initialClue"] ?? "",
           description: firestoreHunt["description"],
           id: firestoreHunt["id"],
-          treasureCaches:
-              firestoreHunt["treasureCaches"]?.map<TreasureCache>((cache) {
-            return new TreasureCache(
+          treasureCaches: firestoreHunt["treasureCaches"]?.map<TreasureCache>(
+            (cache) {
+              return new TreasureCache(
                 id: cache["id"],
                 groupId: cache["groupId"],
                 location: LatLng(
                     cache["location"].latitude, cache["location"].longitude),
-                clue: cache["clue"]);
-          })?.toList(),
+                clue: cache["clue"],
+              );
+            },
+          )?.toList(),
         ),
       )
       ?.toList();
@@ -65,15 +73,17 @@ List<TreasureHunt> Function(QuerySnapshot) convertToHunt =
           initialClue: firestoreHunt["initialClue"] ?? "",
           description: firestoreHunt["description"],
           id: firestoreHunt["id"],
-          treasureCaches:
-              firestoreHunt["treasureCaches"].map<TreasureCache>((cache) {
-            return new TreasureCache(
+          treasureCaches: firestoreHunt["treasureCaches"].map<TreasureCache>(
+            (cache) {
+              return new TreasureCache(
                 id: cache["id"],
                 groupId: cache["groupId"],
                 location: LatLng(
                     cache["location"].latitude, cache["location"].longitude),
-                clue: cache["clue"]);
-          }).toList(),
+                clue: cache["clue"],
+              );
+            },
+          ).toList(),
         ),
       )
       .toList();
@@ -81,15 +91,14 @@ List<TreasureHunt> Function(QuerySnapshot) convertToHunt =
 void deleteChart(int index, List<TreasureHunt> charts) async =>
     await firestoreInstance.collection("charts").doc(charts[index].id).delete();
 
-final chartStream = () => firestoreInstance
-    .collection("charts")
-    .snapshots()
-    ?.map((QuerySnapshot snapshot) => convertToHunt(snapshot));
+final chartStream =
+    () => firestoreInstance.collection("charts").snapshots()?.map(
+          (QuerySnapshot snapshot) => convertToHunt(snapshot),
+        );
 
-final huntStream = () => firestoreInstance
-    .collection("hunts")
-    .snapshots()
-    ?.map((QuerySnapshot snapshot) => convertToSearch(snapshot));
+final huntStream = () => firestoreInstance.collection("hunts").snapshots()?.map(
+      (QuerySnapshot snapshot) => convertToSearch(snapshot),
+    );
 
 Future<void> addUserDataToStore({
   String uid,
@@ -99,14 +108,19 @@ Future<void> addUserDataToStore({
   String avatarUrl,
   String email,
 }) async {
-  await firestoreInstance.collection("user").doc(uid).set({
-    "uid": uid,
-    "firstName": firstName,
-    "lastName": lastName,
-    "birthday": birthday,
-    "url": avatarUrl ?? "",
-    "email": email,
-  });
+  await firestoreInstance.collection("user").doc(uid).set(
+    {
+      "uid": uid,
+      "firstName": firstName,
+      "lastName": lastName,
+      "birthday": birthday,
+      "url": avatarUrl ?? "",
+      "email": email,
+    },
+  );
 }
 
-Future<TreasureUser> getUserData(String uid) {}
+Future<TreasureUser> getUserData(String uid) async {
+  final userDoc = await firestoreInstance.collection("user").doc(uid).get();
+  if (userDoc.exists) return new TreasureUser.fromFirebase(userDoc.data());
+}

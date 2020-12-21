@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:treasure_hunt/components/form_builder_text.dart';
 import 'package:treasure_hunt/components/submit_button.dart';
+import 'package:treasure_hunt/firebase/auth.dart';
 import 'package:treasure_hunt/screens/create_account_screen.dart';
 import 'package:treasure_hunt/screens/root.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -20,8 +21,10 @@ class Login extends HookWidget {
     final key = GlobalKey<FormBuilderState>();
     useEffect(() {
       if (user != null)
-        Future.microtask(
-            () => Navigator.popAndPushNamed(context, RootScreen.routeName));
+        Future.microtask(() {
+          Navigator.popUntil(context, ModalRoute.withName(routeName));
+          Navigator.popAndPushNamed(context, RootScreen.routeName);
+        });
       return;
     }, [user]);
     Widget header = Row(
@@ -77,19 +80,19 @@ class Login extends HookWidget {
         ),
       ],
     );
+    final Widget loading = Center(child: Text("Loading"));
+    final Widget main = SingleChildScrollView(
+      child: Column(
+        children: [
+          header,
+          form,
+        ],
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(),
-      body: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              header,
-              form,
-            ],
-          ),
-        ),
-      ),
+      body: Container(child: auth.currentUser != null ? loading : main),
     );
   }
 }

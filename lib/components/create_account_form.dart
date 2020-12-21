@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:treasure_hunt/components/form_builder_text.dart';
 import 'package:treasure_hunt/firebase/auth.dart';
-import 'package:treasure_hunt/screens/root.dart';
 
 class CreateAccountForm extends HookWidget {
   const CreateAccountForm({Key key}) : super(key: key);
@@ -106,8 +104,6 @@ class CreateAccountForm extends HookWidget {
                       imageFile.value == null
                           ? imageFile.value
                           : File(imageFile.value.path));
-                  Navigator.pop(context);
-                  Navigator.popAndPushNamed(context, RootScreen.routeName);
                 } catch (error) {
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text(error.message)));

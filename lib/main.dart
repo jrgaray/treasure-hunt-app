@@ -18,7 +18,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserState()),
         StreamProvider<List<TreasureHunt>>.value(value: chartStream()),
         StreamProvider<List<TreasureSearch>>.value(value: huntStream()),
-        StreamProvider<User>.value(value: streamSignIn())
+        StreamProvider<User>.value(value: originalStreamSignIn())
       ],
       child: App(),
     ),

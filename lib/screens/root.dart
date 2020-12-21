@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:treasure_hunt/firebase/auth.dart';
 import 'package:treasure_hunt/models/treasure_search.dart';
+import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/login.dart';
+import 'package:treasure_hunt/state/user_state.dart';
 import '../models/treasure_hunt.dart';
 import 'package:flutter/material.dart';
 import 'package:treasure_hunt/components/item_list.dart';
@@ -25,14 +27,16 @@ class RootScreen extends HookWidget {
   Widget build(BuildContext context) {
     final charts = context.watch<List<TreasureHunt>>() ?? [];
     final hunts = context.watch<List<TreasureSearch>>() ?? [];
+    final authUser = context.watch<User>();
+    final user = useFuture(getUserData(authUser?.uid ?? ''));
 
-    final user = context.watch<User>();
     useEffect(() {
-      if (user == null)
+      if (authUser == null) {
         Future.microtask(
             () => Navigator.popAndPushNamed(context, Login.routeName));
+      }
       return;
-    }, [user]);
+    }, [authUser]);
 
     // Navigate to the edit page, passing along the index of the chart that you // want to edit.
     Function(List<TreasureHunt>) editChart =
@@ -40,6 +44,16 @@ class RootScreen extends HookWidget {
               Navigator.pushNamed(context, EditTreasureChart.routeName,
                   arguments: charts[i]);
             };
+    if (authUser == null || !user.hasData) {
+      return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
 
     return DefaultTabController(
       length: 2,
@@ -62,10 +76,16 @@ class RootScreen extends HookWidget {
                       ),
                     ),
                     child: InkWell(
-                      child: Image(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              "https://video.cgtn.com/news/7a596a4e784d544e33516a4d77457a4e786b444f31457a6333566d54/video/f4f4d4a40e0743b1a1e347ab0dbe6085/f4f4d4a40e0743b1a1e347ab0dbe6085.jpg")),
+                      child: user.data?.avatarUrl != null &&
+                              user.data?.avatarUrl.isNotEmpty
+                          ? Image(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(user.data?.avatarUrl),
+                            )
+                          : Center(
+                              child: Text(user.data?.initials,
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
                       onTap: () async {
                         await signOut();
                       },
