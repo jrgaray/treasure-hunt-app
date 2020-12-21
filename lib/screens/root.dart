@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:treasure_hunt/firebase/auth.dart';
 import 'package:treasure_hunt/models/treasure_search.dart';
-import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/login.dart';
-import 'package:treasure_hunt/state/user_state.dart';
 import '../models/treasure_hunt.dart';
 import 'package:flutter/material.dart';
 import 'package:treasure_hunt/components/item_list.dart';
@@ -77,7 +75,7 @@ class RootScreen extends HookWidget {
                     ),
                     child: InkWell(
                       child: user.data?.avatarUrl != null &&
-                              user.data?.avatarUrl.isNotEmpty
+                              user.data.avatarUrl.isNotEmpty
                           ? Image(
                               fit: BoxFit.cover,
                               image: NetworkImage(user.data?.avatarUrl),
