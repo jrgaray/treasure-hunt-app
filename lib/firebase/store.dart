@@ -143,7 +143,7 @@ Stream<List<TreasureChart>> Function(String) userCharts =
         );
 
 Stream<List<TreasureSearch>> Function(String) userHunts =
-    (String userId) => getCollectionFromUser(userId, "chart").snapshots()?.map(
+    (String userId) => getCollectionFromUser(userId, "hunt").snapshots()?.map(
           (QuerySnapshot snapshot) => convertToSearch(snapshot),
         );
 
