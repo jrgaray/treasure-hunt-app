@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
-import '../utils/icon_dictionary.dart';
-import './treasure_cache.dart';
+import 'treasure_cache.dart';
 import 'treasure_user.dart';
 
-class TreasureHunt {
+class TreasureChart {
   /// Id of the treasure hunt.
   String _id;
 
@@ -27,9 +25,9 @@ class TreasureHunt {
   /// First clue to kick off the treasure hunt.
   String _initialClue;
 
-  /// Constructor for the TreasureHunt. All parameters are optional. Creates a
+  /// Constructor for the TreasureChart. All parameters are optional. Creates a
   /// Treasure Hunt for user's to hunt.
-  TreasureHunt({
+  TreasureChart({
     String id,
     String title,
     TreasureUser creator,
@@ -45,7 +43,7 @@ class TreasureHunt {
         _treasureCaches = treasureCaches ?? [],
         _initialClue = initialClue;
 
-  TreasureHunt.copy(TreasureHunt original) {
+  TreasureChart.copy(TreasureChart original) {
     _id = original.id;
     _title = original.title;
     _creator = original._creator;
@@ -66,15 +64,6 @@ class TreasureHunt {
   String get title => _title;
 
   /// Returns a user's avatar url.
-  String get userAvatarUrl => _creator?.avatarUrl;
-
-  /// Returns the creator's user name.
-  String get creatorUserName => _creator?.fullName;
-
-  /// Returns the creator's initials
-  String get userInitials => _creator?.initials;
-
-  /// Returns a user's avatar url.
   String get description => _description;
 
   /// Returns the treasure hunt start date.
@@ -85,6 +74,8 @@ class TreasureHunt {
 
   /// Returns the initial clue to start the treasure hunt.
   String get initialClue => _initialClue;
+
+  TreasureUser get creator => _creator;
 
   // ************************************************************************
   //                                SETTERS
@@ -119,7 +110,7 @@ class TreasureHunt {
         "id": _id,
         "initialClue": _initialClue,
         "title": _title,
-        // "creator": _creator.toMap(),
+        "creator": _creator.uid,
         "description": description,
         "treasureCaches": treasureCache
             .map((cache) => {

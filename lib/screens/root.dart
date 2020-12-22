@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:treasure_hunt/firebase/auth.dart';
 import 'package:treasure_hunt/models/treasure_search.dart';
+import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/login.dart';
-import '../models/treasure_hunt.dart';
+import '../models/treasure_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:treasure_hunt/components/item_list.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -23,10 +25,13 @@ class RootScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final charts = context.watch<List<TreasureHunt>>() ?? [];
-    final hunts = context.watch<List<TreasureSearch>>() ?? [];
     final authUser = context.watch<User>();
-    final user = useFuture(getUserData(authUser?.uid ?? ''));
+    final hunts = context.watch<List<TreasureSearch>>() ?? [];
+    final charts = context.watch<List<TreasureChart>>() ?? [];
+    final docSnap = context.watch<DocumentSnapshot>();
+    final user = docSnap != null && docSnap.data() != null
+        ? new TreasureUser.fromFirebase(docSnap.data())
+        : null;
 
     useEffect(() {
       if (authUser == null) {
@@ -36,13 +41,7 @@ class RootScreen extends HookWidget {
       return;
     }, [authUser]);
 
-    // Navigate to the edit page, passing along the index of the chart that you // want to edit.
-    Function(List<TreasureHunt>) editChart =
-        (List charts) => (BuildContext context, int i) {
-              Navigator.pushNamed(context, EditTreasureChart.routeName,
-                  arguments: charts[i]);
-            };
-    if (authUser == null || !user.hasData) {
+    if (user == null || authUser == null)
       return DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -51,7 +50,12 @@ class RootScreen extends HookWidget {
           ),
         ),
       );
-    }
+
+    Function(List<TreasureChart>) editChart =
+        (List charts) => (BuildContext context, int i) {
+              Navigator.pushNamed(context, EditTreasureChart.routeName,
+                  arguments: charts[i]);
+            };
 
     return DefaultTabController(
       length: 2,
@@ -74,14 +78,13 @@ class RootScreen extends HookWidget {
                       ),
                     ),
                     child: InkWell(
-                      child: user.data?.avatarUrl != null &&
-                              user.data.avatarUrl.isNotEmpty
+                      child: user.avatarUrl != null && user.avatarUrl.isNotEmpty
                           ? Image(
                               fit: BoxFit.cover,
-                              image: NetworkImage(user.data?.avatarUrl),
+                              image: NetworkImage(user.avatarUrl),
                             )
                           : Center(
-                              child: Text(user.data?.initials,
+                              child: Text(user.initials,
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold))),
                       onTap: () async {
@@ -112,7 +115,7 @@ class RootScreen extends HookWidget {
               child: ItemList(
                 'hunt',
                 items: hunts,
-                onTap: huntTreasure,
+                // onTap: huntTreasure,
               ),
             ),
             Center(
@@ -120,16 +123,19 @@ class RootScreen extends HookWidget {
                 'chart',
                 items: charts,
                 onTap: editChart(charts),
-                onLongPress: (index) => deleteChart(index, charts),
+                onLongPress: (index) => deleteChart(index, charts, user.uid),
               ),
             ),
           ],
         ),
         floatingActionButton: FabSelector(
           [
-            {'name': TreasureHuntSearch.routeName, 'arguments': hunts},
             {
-              'name': TreasureHuntCreate.routeName,
+              'name': TreasureHuntSearch.routeName,
+              'arguments': hunts,
+            },
+            {
+              'name': TreasureChartCreate.routeName,
               'arguments': null,
             }
           ],

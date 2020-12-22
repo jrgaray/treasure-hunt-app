@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
-import 'package:treasure_hunt/models/treasure_hunt.dart';
+import 'package:treasure_hunt/models/treasure_chart.dart';
 
 double colorSelector(entry, chart) =>
     chart.value.treasureCache.length - 1 == entry.key
@@ -11,7 +11,7 @@ double colorSelector(entry, chart) =>
 
 /// Creates the polyline that connects all the markers from the treasure
 /// cache data.
-Set<Polyline> buildPolylines(ValueNotifier<TreasureHunt> chart) => [
+Set<Polyline> buildPolylines(ValueNotifier<TreasureChart> chart) => [
       Polyline(
           polylineId: PolylineId('rolypoly'),
           jointType: JointType.round,
@@ -31,7 +31,7 @@ LatLng onDragEnd(LatLng value, String cacheId, ValueNotifier chart) {
   chart.value.treasureCache
       .firstWhere((TreasureCache cache) => cache.id == cacheId)
       .location = value;
-  chart.value = new TreasureHunt.copy(chart.value);
+  chart.value = new TreasureChart.copy(chart.value);
   return value;
 }
 
@@ -40,11 +40,11 @@ void onTap(String cacheId, ValueNotifier chart) {
   chart.value.setTreasureCaches = chart.value.treasureCache
       .where((TreasureCache cache) => cache.id != cacheId)
       .toList();
-  chart.value = new TreasureHunt.copy(chart.value);
+  chart.value = new TreasureChart.copy(chart.value);
 }
 
 /// Creates the markers for google maps from the treasure cache data.
-Set<Marker> buildMarkers(ValueNotifier<TreasureHunt> chart) {
+Set<Marker> buildMarkers(ValueNotifier<TreasureChart> chart) {
   return chart.value.treasureCache.asMap().entries.map((entry) {
     final cacheId = entry.value.id;
     return Marker(
@@ -69,6 +69,6 @@ Function(LatLng) onMapTap(ValueNotifier chart) {
         location: location,
       ),
     );
-    chart.value = new TreasureHunt.copy(chart.value);
+    chart.value = new TreasureChart.copy(chart.value);
   };
 }

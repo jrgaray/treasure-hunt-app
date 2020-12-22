@@ -4,10 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:treasure_hunt/app.dart';
 import 'package:treasure_hunt/firebase/auth.dart';
-import 'package:treasure_hunt/firebase/store.dart';
-import 'package:treasure_hunt/models/treasure_hunt.dart';
-import 'package:treasure_hunt/models/treasure_search.dart';
-import 'package:treasure_hunt/state/user_state.dart';
+// TODO: Remove this once set on auth method.
+// import 'package:treasure_hunt/state/user_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,9 +13,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UserState()),
-        StreamProvider<List<TreasureHunt>>.value(value: chartStream()),
-        StreamProvider<List<TreasureSearch>>.value(value: huntStream()),
+        // ChangeNotifierProvider(create: (_) => UserState()),
         StreamProvider<User>.value(value: originalStreamSignIn())
       ],
       child: App(),

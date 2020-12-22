@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:treasure_hunt/models/treasure_hunt.dart';
+import 'package:treasure_hunt/models/treasure_chart.dart';
 
 class ItemList extends HookWidget {
   const ItemList(this.type,
@@ -9,7 +9,7 @@ class ItemList extends HookWidget {
   final Function onTap;
   final Function onLongPress;
   final String type;
-  final TreasureHunt chart;
+  final TreasureChart chart;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,6 @@ class ItemList extends HookWidget {
         default:
           final item = items[index];
           return ListTile(
-            leading: item.userIcon ?? null,
             title: Text(item.title),
             subtitle: Text(item.description ?? null),
             onTap: () => onTap(context, index),

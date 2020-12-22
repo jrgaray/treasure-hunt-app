@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:treasure_hunt/components/dialog.dart';
@@ -7,8 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:treasure_hunt/components/dialog_form.dart';
 import 'package:treasure_hunt/firebase/store.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
-import 'package:treasure_hunt/models/treasure_hunt.dart';
+import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';
+import 'package:treasure_hunt/state/user_state.dart';
 import 'package:treasure_hunt/utils/getArgs.dart';
 
 class EditTreasureChart extends HookWidget {
@@ -16,10 +15,11 @@ class EditTreasureChart extends HookWidget {
   static const routeName = 'editChart';
   @override
   Widget build(BuildContext context) {
-    TreasureHunt passedChart = getRouteArgs(context);
-    final charts = context.watch<List<TreasureHunt>>();
+    TreasureChart passedChart = getRouteArgs(context);
+    final charts = context.watch<List<TreasureChart>>();
+    final userId = context.watch<UserState>().user.uid;
     final chart =
-        charts.firstWhere((TreasureHunt chart) => chart.id == passedChart.id);
+        charts.firstWhere((TreasureChart chart) => chart.id == passedChart.id);
 
     List<TreasureCache> caches = chart.treasureCache;
 
@@ -40,7 +40,7 @@ class EditTreasureChart extends HookWidget {
             SimpleDialogOption(
               child: Text('Yes'),
               onPressed: () {
-                deleteCache(chart, caches[index], () {});
+                deleteCache(userId, chart, caches[index], () {});
                 Navigator.pop(context);
               },
             ),

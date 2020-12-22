@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:treasure_hunt/firebase/store.dart';
+import 'package:treasure_hunt/models/treasure_chart.dart';
+import 'package:treasure_hunt/models/treasure_search.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';
 import 'package:treasure_hunt/screens/create_account_screen.dart';
 import 'package:treasure_hunt/screens/edit_treasure_chart.dart';
@@ -13,22 +19,42 @@ class App extends HookWidget {
   static const String title = 'Treasure Hunt';
   @override
   Widget build(BuildContext context) {
+    final authUser = context.watch<User>();
     final routes = {
       EditTreasureChart.routeName: (context) => EditTreasureChart(),
-      TreasureHuntCreate.routeName: (context) => TreasureHuntCreate(),
+      TreasureChartCreate.routeName: (context) => TreasureChartCreate(),
       TreasureHuntSearch.routeName: (context) => TreasureHuntSearch(),
       RootScreen.routeName: (context) => RootScreen(title: title),
       Login.routeName: (context) => Login(title: title),
       AddTreasureCaches.routeName: (context) => AddTreasureCaches(),
       CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
     };
-    return MaterialApp(
-        title: 'Hunt',
-        theme: ThemeData(
-          textTheme: GoogleFonts.latoTextTheme(),
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        routes: routes);
+    return MultiProvider(
+      providers: [
+        StreamProvider<DocumentSnapshot>.value(
+            catchError: (context, error) {
+              print(error);
+            },
+            value: streamData(authUser?.uid) ?? null),
+        StreamProvider<List<TreasureChart>>.value(
+            catchError: (context, error) {
+              print(error);
+            },
+            value: userCharts(authUser?.uid) ?? null),
+        StreamProvider<List<TreasureSearch>>.value(
+            catchError: (context, error) {
+              print(error);
+            },
+            value: userHunts(authUser?.uid) ?? null),
+      ],
+      child: MaterialApp(
+          title: 'Hunt',
+          theme: ThemeData(
+            textTheme: GoogleFonts.latoTextTheme(),
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          routes: routes),
+    );
   }
 }

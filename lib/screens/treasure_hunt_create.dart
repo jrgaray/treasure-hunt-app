@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:treasure_hunt/models/treasure_hunt.dart';
+import 'package:treasure_hunt/models/treasure_chart.dart';
+import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';
+import 'package:treasure_hunt/state/user_state.dart';
 import '../components/input.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:treasure_hunt/utils/form_key.dart';
 
-class TreasureHuntCreate extends HookWidget {
+class TreasureChartCreate extends HookWidget {
   static const routeName = 'newTreasureChart';
   static const String title = 'Create Treasure Hunt';
 
   @override
   Widget build(BuildContext context) {
-    final newTreasureChart = new TreasureHunt();
+    final TreasureUser user = context.watch<UserState>().user;
+    final newTreasureChart = new TreasureChart(creator: user);
     return Scaffold(
-      appBar: AppBar(title: Text(TreasureHuntCreate.title)),
+      appBar: AppBar(title: Text(TreasureChartCreate.title)),
       body: Container(
         child: FormBuilder(
           key: key,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:intl/intl.dart';
 import 'package:treasure_hunt/models/treasure_search.dart';
 import 'package:treasure_hunt/utils/getArgs.dart';
 
@@ -28,9 +27,9 @@ class TreasureHuntSearch extends HookWidget {
                     subtitle: Text(treasureHunt.description),
                     leading: CircleAvatar(
                       // backgroundImage: NetworkImage(treasureHunt.userAvatarUrl),
-                      child: treasureHunt.userAvatarUrl != null
+                      child: treasureHunt.creator.avatarUrl != null
                           ? null
-                          : Text(treasureHunt.userInitials),
+                          : Text(treasureHunt.creator.initials),
                     ),
                     onTap: _onTap(treasureHunt),
                   ))

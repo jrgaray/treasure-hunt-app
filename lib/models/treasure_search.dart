@@ -1,8 +1,8 @@
 import 'package:treasure_hunt/models/treasure_cache.dart';
-import 'package:treasure_hunt/models/treasure_hunt.dart';
+import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';
 
-class TreasureSearch extends TreasureHunt {
+class TreasureSearch extends TreasureChart {
   TreasureCache currentCache;
   int currentCacheIndex;
   bool hasWon;
