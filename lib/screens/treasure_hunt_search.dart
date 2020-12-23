@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:treasure_hunt/firebase/store.dart';
 import 'package:provider/provider.dart';
-import 'package:treasure_hunt/models/treasure_search.dart';
+import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';
 
 class TreasureHuntSearch extends HookWidget {
@@ -18,7 +18,7 @@ class TreasureHuntSearch extends HookWidget {
     final mapOfUsers = context.watch<Map<String, TreasureUser>>();
 
     /// On tap event handler. Adds a treasure hunt
-    Function _onTap(TreasureSearch treasureHunt) => () {
+    Function _onTap(TreasureHunt treasureHunt) => () {
           addHunt(user.uid, treasureHunt);
           Navigator.pop(context);
         };

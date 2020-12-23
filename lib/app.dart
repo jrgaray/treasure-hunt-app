@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:treasure_hunt/firebase/store.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
-import 'package:treasure_hunt/models/treasure_search.dart';
+import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';
 import 'package:treasure_hunt/screens/create_account_screen.dart';
@@ -58,7 +58,7 @@ class App extends HookWidget {
               return [];
             },
             value: userCharts(authUser?.uid) ?? null),
-        StreamProvider<List<TreasureSearch>>.value(
+        StreamProvider<List<TreasureHunt>>.value(
             catchError: (context, error) {
               print(error);
               return [];

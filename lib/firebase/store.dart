@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
-import 'package:treasure_hunt/models/treasure_search.dart';
+import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';
 
 // Firestore instance.
@@ -29,11 +29,10 @@ Future<void> Function(String, TreasureChart) addChart =
       .set(chart.toMap());
 };
 
-String Function(String, TreasureSearch) addHunt =
-    (String user, TreasureSearch hunt) {
-  print(user);
-  print(hunt);
-  return user;
+/// Add Hunt to user's list.
+Future<void> Function(String, TreasureHunt) addHunt =
+    (String user, TreasureHunt hunt) async {
+  await getCollectionFromUser(user, "hunt").doc().set(hunt.toFirebaseObject());
 };
 
 // Delete a cache from chart.
@@ -93,12 +92,12 @@ Future<void> addUserDataToStore({
 //////////////////////////// HELPER Functions ////////////////////////////
 
 // Convert snapshot to a list of Treasure Searches.
-List<TreasureSearch> Function(QuerySnapshot) convertToSearch = (snapshot) {
+List<TreasureHunt> Function(QuerySnapshot) convertToSearch = (snapshot) {
   final docs = snapshot?.docs ?? [];
   final data = docs?.map((document) => (document.data()))?.toList();
-  return data?.map<TreasureSearch>(
+  return data?.map<TreasureHunt>(
     (Map<String, dynamic> firestoreHunt) {
-      return new TreasureSearch(
+      return new TreasureHunt(
         title: firestoreHunt["title"],
         initialClue: firestoreHunt["initialClue"] ?? "",
         creatorId: firestoreHunt["creatorId"],
@@ -153,7 +152,7 @@ Stream<List<TreasureChart>> Function(String) userCharts =
           (QuerySnapshot snapshot) => convertToChart(snapshot),
         );
 
-Stream<List<TreasureSearch>> Function(String) userHunts =
+Stream<List<TreasureHunt>> Function(String) userHunts =
     (String userId) => getCollectionFromUser(userId, "hunt").snapshots()?.map(
           (QuerySnapshot snapshot) => convertToSearch(snapshot),
         );

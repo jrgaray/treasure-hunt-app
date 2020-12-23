@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:treasure_hunt/firebase/auth.dart';
-import 'package:treasure_hunt/models/treasure_search.dart';
+import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/login.dart';
 import '../models/treasure_chart.dart';
@@ -23,7 +23,7 @@ class RootScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final authUser = context.watch<User>();
-    final hunts = context.watch<List<TreasureSearch>>() ?? [];
+    final hunts = context.watch<List<TreasureHunt>>() ?? [];
     final charts = context.watch<List<TreasureChart>>() ?? [];
     final docSnap = context.watch<DocumentSnapshot>();
     final user = docSnap != null && docSnap.data() != null
