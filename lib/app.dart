@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:treasure_hunt/firebase/store.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/models/treasure_search.dart';
+import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';
 import 'package:treasure_hunt/screens/create_account_screen.dart';
 import 'package:treasure_hunt/screens/edit_treasure_chart.dart';
@@ -31,19 +32,36 @@ class App extends HookWidget {
     };
     return MultiProvider(
       providers: [
+        StreamProvider<Map<String, TreasureUser>>.value(
+          catchError: (context, error) {
+            print(error);
+            return null;
+          },
+          value: getUsers(),
+        ),
+        StreamProvider<QuerySnapshot>.value(
+          catchError: (context, error) {
+            print(error);
+            return null;
+          },
+          value: getAllCharts(),
+        ),
         StreamProvider<DocumentSnapshot>.value(
             catchError: (context, error) {
               print(error);
+              return null;
             },
             value: streamData(authUser?.uid) ?? null),
         StreamProvider<List<TreasureChart>>.value(
             catchError: (context, error) {
               print(error);
+              return [];
             },
             value: userCharts(authUser?.uid) ?? null),
         StreamProvider<List<TreasureSearch>>.value(
             catchError: (context, error) {
               print(error);
+              return [];
             },
             value: userHunts(authUser?.uid) ?? null),
       ],

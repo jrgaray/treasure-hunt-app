@@ -15,10 +15,11 @@ class FormBuilderText extends StatelessWidget {
         keyboardType: TextInputType.text,
         focusNode: FocusNode(skipTraversal: true),
         onTap: () => null,
-        validator: (value) {
+        validator: (String value) {
           if (value == null || value.isEmpty) {
             return 'Field cannot be empty';
           }
+          return null;
         },
         // onSaved: onSaved,
         decoration: InputDecoration(

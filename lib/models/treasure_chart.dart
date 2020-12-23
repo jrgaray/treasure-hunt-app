@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 import 'treasure_cache.dart';
-import 'treasure_user.dart';
 
 class TreasureChart {
   /// Id of the treasure hunt.
@@ -10,8 +9,8 @@ class TreasureChart {
   /// Title of the treasure hunt.
   String _title;
 
-  /// Creator of the treasure hunt.
-  TreasureUser _creator;
+  /// Creator userId.
+  String _creatorId;
 
   /// A short description of the treasure hunt.
   String _description;
@@ -30,14 +29,14 @@ class TreasureChart {
   TreasureChart({
     String id,
     String title,
-    TreasureUser creator,
+    String creatorId,
     String description,
     String initialClue,
     DateTime start,
     List<TreasureCache> treasureCaches,
   })  : _id = id ?? Uuid().v4(),
         _title = title,
-        _creator = creator,
+        _creatorId = creatorId,
         _description = description,
         _start = start,
         _treasureCaches = treasureCaches ?? [],
@@ -46,7 +45,7 @@ class TreasureChart {
   TreasureChart.copy(TreasureChart original) {
     _id = original.id;
     _title = original.title;
-    _creator = original._creator;
+    _creatorId = original._creatorId;
     _description = original._description;
     _start = original.startDate;
     _treasureCaches = original.treasureCache;
@@ -75,7 +74,8 @@ class TreasureChart {
   /// Returns the initial clue to start the treasure hunt.
   String get initialClue => _initialClue;
 
-  TreasureUser get creator => _creator;
+  /// Returns the ID for the creator.
+  String get creatorId => _creatorId;
 
   // ************************************************************************
   //                                SETTERS
@@ -84,8 +84,8 @@ class TreasureChart {
   /// Set TreasureChart title.
   set setTitle(String title) => _title = title;
 
-  /// Set TreasureChart creator.
-  set setCreator(TreasureUser creator) => _creator = creator;
+  /// Set creator ID.
+  set setCreatorId(String creatorId) => _creatorId = creatorId;
 
   /// Set TreasureChart description.
   set setDescription(String description) => _description = description;
@@ -110,7 +110,7 @@ class TreasureChart {
         "id": _id,
         "initialClue": _initialClue,
         "title": _title,
-        "creator": _creator.uid,
+        "creatorId": _creatorId,
         "description": description,
         "treasureCaches": treasureCache
             .map((cache) => {

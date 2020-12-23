@@ -1,6 +1,5 @@
 import 'package:treasure_hunt/models/treasure_cache.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
-import 'package:treasure_hunt/models/treasure_user.dart';
 
 class TreasureSearch extends TreasureChart {
   TreasureCache currentCache;
@@ -10,7 +9,7 @@ class TreasureSearch extends TreasureChart {
   TreasureSearch({
     String id,
     String title,
-    TreasureUser creator,
+    String creatorId,
     String description,
     String initialClue,
     DateTime start,
@@ -18,13 +17,20 @@ class TreasureSearch extends TreasureChart {
   }) : super(
             id: id,
             title: title,
-            creator: creator,
+            creatorId: creatorId,
             description: description,
             initialClue: initialClue,
             start: start,
             treasureCaches: treasureCaches) {
     this.currentCacheIndex = -1;
     this.hasWon = false;
+  }
+  toFirebaseObject() {
+    final test = super.toMap();
+    test["currentCacheIndex"] = this.currentCacheIndex;
+    test["hasWon"] = this.hasWon;
+    test["currentCache"] = this.currentCache?.toFirebaseObject() ?? null;
+    return test;
   }
 
   String get currentClue =>

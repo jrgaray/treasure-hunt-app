@@ -1,10 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';
-import 'package:treasure_hunt/state/user_state.dart';
 import '../components/input.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:treasure_hunt/utils/form_key.dart';
@@ -15,8 +15,9 @@ class TreasureChartCreate extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TreasureUser user = context.watch<UserState>().user;
-    final newTreasureChart = new TreasureChart(creator: user);
+    final user =
+        new TreasureUser.fromFirebase(context.watch<DocumentSnapshot>().data());
+    final newTreasureChart = new TreasureChart(creatorId: user.uid);
     return Scaffold(
       appBar: AppBar(title: Text(TreasureChartCreate.title)),
       body: Container(

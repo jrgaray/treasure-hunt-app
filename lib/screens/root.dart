@@ -20,9 +20,6 @@ class RootScreen extends HookWidget {
   static final routeName = 'root';
   final String title;
 
-  /// TODO: Add hunting treasure pathway.
-  void huntTreasure(BuildContext context, int index) {}
-
   @override
   Widget build(BuildContext context) {
     final authUser = context.watch<User>();
@@ -132,11 +129,9 @@ class RootScreen extends HookWidget {
           [
             {
               'name': TreasureHuntSearch.routeName,
-              'arguments': hunts,
             },
             {
               'name': TreasureChartCreate.routeName,
-              'arguments': null,
             }
           ],
         ),

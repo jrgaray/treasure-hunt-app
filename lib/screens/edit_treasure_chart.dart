@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:treasure_hunt/components/dialog.dart';
@@ -7,7 +8,6 @@ import 'package:treasure_hunt/firebase/store.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';
-import 'package:treasure_hunt/state/user_state.dart';
 import 'package:treasure_hunt/utils/getArgs.dart';
 
 class EditTreasureChart extends HookWidget {
@@ -16,8 +16,8 @@ class EditTreasureChart extends HookWidget {
   @override
   Widget build(BuildContext context) {
     TreasureChart passedChart = getRouteArgs(context);
+    final userId = context.watch<User>().uid;
     final charts = context.watch<List<TreasureChart>>();
-    final userId = context.watch<UserState>().user.uid;
     final chart =
         charts.firstWhere((TreasureChart chart) => chart.id == passedChart.id);
 
@@ -105,7 +105,9 @@ class EditTreasureChart extends HookWidget {
         children: [
           Flexible(
             child: GestureDetector(
-              onTap: () => print('hi'),
+              onTap: () {
+                //TODO: Add functionality to edit the title, description, and inital clue.
+              },
               child: Padding(
                 padding: EdgeInsets.all(20),
                 child: Column(

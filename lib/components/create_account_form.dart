@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:treasure_hunt/components/form_builder_text.dart';
 import 'package:treasure_hunt/firebase/auth.dart';
-import 'package:treasure_hunt/state/user_state.dart';
 
 class CreateAccountForm extends HookWidget {
   const CreateAccountForm({Key key}) : super(key: key);
