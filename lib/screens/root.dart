@@ -4,6 +4,7 @@ import 'package:treasure_hunt/firebase/auth.dart';
 import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/login.dart';
+import 'package:treasure_hunt/screens/treasure_hunt_status.dart';
 import '../models/treasure_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:treasure_hunt/components/item_list.dart';
@@ -48,10 +49,16 @@ class RootScreen extends HookWidget {
         ),
       );
 
-    Function(List<TreasureChart>) editChart =
-        (List charts) => (BuildContext context, int i) {
+    Function(BuildContext, int) Function(List<TreasureChart>) editChart =
+        (List<TreasureChart> charts) => (BuildContext context, int i) {
               Navigator.pushNamed(context, EditTreasureChart.routeName,
                   arguments: charts[i]);
+            };
+
+    Function(BuildContext, int) Function(List<TreasureHunt>) startHunt =
+        (List<TreasureHunt> hunts) => (BuildContext context, int i) {
+              Navigator.pushNamed(context, TreasureHuntStatus.routeName,
+                  arguments: hunts[i]);
             };
 
     return DefaultTabController(
@@ -112,7 +119,7 @@ class RootScreen extends HookWidget {
               child: ItemList(
                 'hunt',
                 items: hunts,
-                // onTap: huntTreasure,
+                onTap: startHunt(hunts),
               ),
             ),
             Center(

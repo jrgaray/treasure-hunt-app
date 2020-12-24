@@ -4,25 +4,24 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
 
-double colorSelector(entry, chart) =>
-    chart.value.treasureCache.length - 1 == entry.key
+double colorSelector(entry, List<TreasureCache> caches) =>
+    caches.length - 1 == entry.key
         ? BitmapDescriptor.hueRed
         : BitmapDescriptor.hueAzure;
 
 /// Creates the polyline that connects all the markers from the treasure
 /// cache data.
-Set<Polyline> buildPolylines(ValueNotifier<TreasureChart> chart) => [
+Set<Polyline> buildPolylines(List<TreasureCache> caches) => [
       Polyline(
           polylineId: PolylineId('rolypoly'),
           jointType: JointType.round,
-          points: chart.value.treasureCache
-              .map((TreasureCache cache) => cache.location)
-              .toList())
+          points: caches.map((TreasureCache cache) => cache.location).toList())
     ].toSet();
 
-LatLng setInitialCameraTarget(AsyncSnapshot snapshot, ValueNotifier chart) =>
-    chart.value.treasureCache.length > 0
-        ? chart.value.treasureCache.last.location
+LatLng setInitialCameraTarget(
+        AsyncSnapshot snapshot, List<TreasureCache> caches) =>
+    caches.length > 0
+        ? caches.last.location
         : LatLng(snapshot.data.latitude, snapshot.data.longitude);
 
 /// Event listener for when a marker is dragged. Updates the state of the
@@ -52,9 +51,22 @@ Set<Marker> buildMarkers(ValueNotifier<TreasureChart> chart) {
       position: entry.value.location,
       consumeTapEvents: true,
       onTap: () => onTap(cacheId, chart),
-      icon: BitmapDescriptor.defaultMarkerWithHue(colorSelector(entry, chart)),
+      icon: BitmapDescriptor.defaultMarkerWithHue(
+          colorSelector(entry, chart.value.treasureCache)),
       draggable: true,
       onDragEnd: (value) => onDragEnd(value, cacheId, chart),
+    );
+  }).toSet();
+}
+
+Set<Marker> buildStaticMarkers(List<TreasureCache> caches) {
+  return caches.asMap().entries.map((entry) {
+    final cacheId = entry.value.id;
+    return Marker(
+      markerId: MarkerId(cacheId),
+      position: entry.value.location,
+      consumeTapEvents: true,
+      icon: BitmapDescriptor.defaultMarkerWithHue(colorSelector(entry, caches)),
     );
   }).toSet();
 }

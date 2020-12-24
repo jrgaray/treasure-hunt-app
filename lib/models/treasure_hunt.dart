@@ -5,6 +5,7 @@ class TreasureHunt extends TreasureChart {
   TreasureCache currentCache;
   int currentCacheIndex;
   bool hasWon;
+  List<TreasureCache> foundCaches;
 
   TreasureHunt({
     String id,
@@ -24,13 +25,18 @@ class TreasureHunt extends TreasureChart {
             treasureCaches: treasureCaches) {
     this.currentCacheIndex = -1;
     this.hasWon = false;
+    this.foundCaches = [];
   }
   toFirebaseObject() {
-    final test = super.toMap();
-    test["currentCacheIndex"] = this.currentCacheIndex;
-    test["hasWon"] = this.hasWon;
-    test["currentCache"] = this.currentCache?.toFirebaseObject() ?? null;
-    return test;
+    final hunt = super.toMap();
+    hunt["currentCacheIndex"] = this.currentCacheIndex;
+    hunt["hasWon"] = this.hasWon;
+    hunt["currentCache"] = this.currentCache?.toFirebaseObject() ?? null;
+    hunt["foundCaches"] = this
+        .foundCaches
+        .map((TreasureCache cache) => cache.toFirebaseObject())
+        .toList();
+    return hunt;
   }
 
   String get currentClue =>
@@ -41,5 +47,6 @@ class TreasureHunt extends TreasureChart {
     this.currentCacheIndex++;
     if (checkHasWon()) return;
     this.currentCache = this.treasureCache[currentCacheIndex];
+    this.foundCaches.add(this.treasureCache[currentCacheIndex]);
   }
 }

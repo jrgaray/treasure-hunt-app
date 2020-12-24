@@ -13,6 +13,7 @@ import 'package:treasure_hunt/utils/getArgs.dart';
 class EditTreasureChart extends HookWidget {
   EditTreasureChart({Key key}) : super(key: key);
   static const routeName = 'editChart';
+  static const title = Text('Edit Treasure Chart');
   @override
   Widget build(BuildContext context) {
     TreasureChart passedChart = getRouteArgs(context);
@@ -88,7 +89,7 @@ class EditTreasureChart extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Treasure Chart'),
+        title: title,
         actions: [
           IconButton(
             icon: Icon(Icons.map),

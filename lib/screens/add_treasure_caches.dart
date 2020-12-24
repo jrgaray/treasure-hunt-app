@@ -10,7 +10,7 @@ import 'package:treasure_hunt/screens/edit_treasure_chart.dart';
 import 'package:treasure_hunt/screens/root.dart';
 import 'package:treasure_hunt/utils/getArgs.dart';
 import 'package:treasure_hunt/utils/mapBuilderUtils.dart';
-import '../utils/checkLocationService.dart';
+import '../utils/location_helpers.dart';
 import '../components/dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -62,7 +62,7 @@ class AddTreasureCaches extends HookWidget {
     }
 
     return FutureBuilder(
-      future: checkLocationService(location),
+      future: getLocation(location),
       builder: (context, snapshot) {
         // If the snapshot is pending return a circular progress indicator.
         if (!snapshot.hasData) {
@@ -83,9 +83,10 @@ class AddTreasureCaches extends HookWidget {
               myLocationButtonEnabled: true,
               myLocationEnabled: true,
               zoomControlsEnabled: false,
-              polylines: buildPolylines(chart),
+              polylines: buildPolylines(chart.value.treasureCache),
               initialCameraPosition: CameraPosition(
-                target: setInitialCameraTarget(snapshot, chart),
+                target:
+                    setInitialCameraTarget(snapshot, chart.value.treasureCache),
                 zoom: 17,
               ),
             ),

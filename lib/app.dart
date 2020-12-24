@@ -15,6 +15,8 @@ import 'package:treasure_hunt/screens/root.dart';
 import 'package:treasure_hunt/screens/login.dart';
 import 'package:treasure_hunt/screens/treasure_hunt_search.dart';
 import 'package:treasure_hunt/screens/treasure_hunt_create.dart';
+import 'package:treasure_hunt/screens/treasure_hunt_status.dart';
+import 'package:treasure_hunt/screens/view_treasure_hunt_map.dart';
 
 class App extends HookWidget {
   static const String title = 'Treasure Hunt';
@@ -22,16 +24,19 @@ class App extends HookWidget {
   Widget build(BuildContext context) {
     final authUser = context.watch<User>();
     final routes = {
-      EditTreasureChart.routeName: (context) => EditTreasureChart(),
-      TreasureChartCreate.routeName: (context) => TreasureChartCreate(),
-      TreasureHuntSearch.routeName: (context) => TreasureHuntSearch(),
-      RootScreen.routeName: (context) => RootScreen(title: title),
-      Login.routeName: (context) => Login(title: title),
       AddTreasureCaches.routeName: (context) => AddTreasureCaches(),
       CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
+      EditTreasureChart.routeName: (context) => EditTreasureChart(),
+      Login.routeName: (context) => Login(title: title),
+      RootScreen.routeName: (context) => RootScreen(title: title),
+      TreasureChartCreate.routeName: (context) => TreasureChartCreate(),
+      TreasureHuntSearch.routeName: (context) => TreasureHuntSearch(),
+      TreasureHuntStatus.routeName: (context) => TreasureHuntStatus(),
+      ViewTreasureHuntMap.routeName: (context) => ViewTreasureHuntMap(),
     };
     return MultiProvider(
       providers: [
+        // Stream for getting a Map of TreasureUsers.
         StreamProvider<Map<String, TreasureUser>>.value(
           catchError: (context, error) {
             print(error);
@@ -39,6 +44,7 @@ class App extends HookWidget {
           },
           value: getUsers(),
         ),
+        // Stream for getting all the charts for a user to select and start from.
         StreamProvider<QuerySnapshot>.value(
           catchError: (context, error) {
             print(error);
@@ -46,18 +52,21 @@ class App extends HookWidget {
           },
           value: getAllCharts(),
         ),
+        // Stream for getting the logged in user's data.
         StreamProvider<DocumentSnapshot>.value(
             catchError: (context, error) {
               print(error);
               return null;
             },
             value: streamData(authUser?.uid) ?? null),
+        // Stream for grabbing the user's charts.
         StreamProvider<List<TreasureChart>>.value(
             catchError: (context, error) {
               print(error);
               return [];
             },
             value: userCharts(authUser?.uid) ?? null),
+        // Stream for grabbing the user's hunts.
         StreamProvider<List<TreasureHunt>>.value(
             catchError: (context, error) {
               print(error);
