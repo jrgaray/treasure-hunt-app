@@ -1,7 +1,7 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/utils/location_helpers.dart';
 import 'package:treasure_hunt/utils/getArgs.dart';
@@ -14,11 +14,10 @@ class ViewTreasureHuntMap extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Location location = new Location();
     final TreasureHunt hunt = getRouteArgs(context);
     return FutureBuilder(
-      future: checkLocationServiceAndPermission(location),
-      builder: (context, snapshot) {
+      future: getLocation(),
+      builder: (context, AsyncSnapshot<Position> snapshot) {
         // If the snapshot is pending return a circular progress indicator.
         if (!snapshot.hasData) {
           return const Center(
@@ -33,7 +32,7 @@ class ViewTreasureHuntMap extends HookWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('Add Caches'),
+            title: Text('Treasure Map'),
             automaticallyImplyLeading: false,
           ),
           body: GoogleMap(
@@ -44,7 +43,7 @@ class ViewTreasureHuntMap extends HookWidget {
             zoomControlsEnabled: false,
             polylines: buildPolylines(hunt.foundCaches),
             initialCameraPosition: CameraPosition(
-              target: setInitialCameraTarget(snapshot, hunt.foundCaches),
+              target: getLatLngLocation(snapshot.data),
               zoom: 17,
             ),
           ),

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:treasure_hunt/firebase/store.dart';
 import 'package:provider/provider.dart';
-import 'package:treasure_hunt/models/treasure_hunt.dart';
+import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';
 
 class TreasureHuntSearch extends HookWidget {
@@ -13,12 +13,12 @@ class TreasureHuntSearch extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allCharts = convertToSearch(context.watch<QuerySnapshot>());
+    final allCharts = convertToChart(context.watch<QuerySnapshot>());
     final user = context.watch<User>();
     final mapOfUsers = context.watch<Map<String, TreasureUser>>();
 
     /// On tap event handler. Adds a treasure hunt
-    Function _onTap(TreasureHunt treasureHunt) => () {
+    Function _onTap(TreasureChart treasureHunt) => () {
           addHunt(user.uid, treasureHunt);
           Navigator.pop(context);
         };
@@ -29,18 +29,19 @@ class TreasureHuntSearch extends HookWidget {
         child: ListView(
           children: allCharts.map(
             (treasureHunt) {
-              final leadingImage =
-                  mapOfUsers[treasureHunt.creatorId]?.avatarUrl != null
-                      ? CircleAvatar(
-                          backgroundColor: Colors.blue,
-                          backgroundImage: NetworkImage(
-                              mapOfUsers[treasureHunt.creatorId]?.avatarUrl),
-                        )
-                      : CircleAvatar(
-                          backgroundColor: Colors.blue,
-                          child:
-                              Text(mapOfUsers[treasureHunt.creatorId].initials),
-                        );
+              final leadingImage = mapOfUsers[treasureHunt.creatorId]
+                          ?.avatarUrl !=
+                      null
+                  ? CircleAvatar(
+                      backgroundColor: Colors.blue,
+                      backgroundImage: NetworkImage(
+                          mapOfUsers[treasureHunt.creatorId]?.avatarUrl),
+                    )
+                  : CircleAvatar(
+                      backgroundColor: Colors.blue,
+                      child: Text(
+                          mapOfUsers[treasureHunt.creatorId]?.initials ?? ""),
+                    );
 
               return ListTile(
                 title: Text(treasureHunt.title),

@@ -4,6 +4,7 @@ import 'package:treasure_hunt/models/treasure_cache.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';
+import 'package:uuid/uuid.dart';
 
 // Firestore instance.
 final firestoreInstance = FirebaseFirestore.instance;
@@ -14,6 +15,27 @@ final getCollectionFromUser = (String userId, String collection) =>
 
 DocumentReference Function(String) getUserReference =
     (String userId) => firestoreInstance.collection("user").doc(userId);
+
+//////////////////////////////// HUNT CRUD ////////////////////////////////
+
+/// Add Hunt to user's list.
+Future<void> Function(String, TreasureChart) addHunt =
+    (String user, TreasureChart chart) async {
+  final hunt = new TreasureHunt.fromChart(chart, new Uuid().v4());
+
+  await getCollectionFromUser(user, "hunt")
+      .doc(hunt.id)
+      .set(hunt.toFirebaseObject());
+};
+
+/// Update hunt with new information.
+Future<void> Function(String, TreasureHunt) updateTreasureHunt =
+    (String user, TreasureHunt hunt) async {
+  hunt.setNextCache();
+  await getCollectionFromUser(user, "hunt")
+      .doc(hunt.id)
+      .update(hunt.toFirebaseObject());
+};
 
 //////////////////////////////// CHART CRUD ////////////////////////////////
 
@@ -27,12 +49,6 @@ Future<void> Function(String, TreasureChart) addChart =
   return await getCollectionFromUser(userId, "chart")
       .doc(chart.id)
       .set(chart.toMap());
-};
-
-/// Add Hunt to user's list.
-Future<void> Function(String, TreasureHunt) addHunt =
-    (String user, TreasureHunt hunt) async {
-  await getCollectionFromUser(user, "hunt").doc().set(hunt.toFirebaseObject());
 };
 
 // Delete a cache from chart.
@@ -103,6 +119,17 @@ List<TreasureHunt> Function(QuerySnapshot) convertToSearch = (snapshot) {
         creatorId: firestoreHunt["creatorId"],
         description: firestoreHunt["description"],
         id: firestoreHunt["id"],
+        currentCacheIndex: firestoreHunt["currentCacheIndex"],
+        hasWon: firestoreHunt["hasWon"],
+        foundCaches: firestoreHunt["foundCaches"]?.map<TreasureCache>((cache) {
+          return new TreasureCache(
+            id: cache["id"],
+            groupId: cache["groupId"],
+            location:
+                LatLng(cache["location"].latitude, cache["location"].longitude),
+            clue: cache["clue"],
+          );
+        })?.toList(),
         treasureCaches: firestoreHunt["treasureCaches"]?.map<TreasureCache>(
           (cache) {
             return new TreasureCache(
@@ -128,6 +155,7 @@ List<TreasureChart> Function(QuerySnapshot) convertToChart =
     return new TreasureChart(
       title: firestoreHunt["title"],
       initialClue: firestoreHunt["initialClue"] ?? "",
+      creatorId: firestoreHunt["creatorId"],
       description: firestoreHunt["description"],
       id: firestoreHunt["id"],
       treasureCaches: firestoreHunt["treasureCaches"].map<TreasureCache>(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:uuid/uuid.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
@@ -18,8 +19,10 @@ Set<Polyline> buildPolylines(List<TreasureCache> caches) => [
           points: caches.map((TreasureCache cache) => cache.location).toList())
     ].toSet();
 
+/// Set the initial position on goolge maps. Either targets the last cache
+/// position or your current position.
 LatLng setInitialCameraTarget(
-        AsyncSnapshot snapshot, List<TreasureCache> caches) =>
+        AsyncSnapshot<Position> snapshot, List<TreasureCache> caches) =>
     caches.length > 0
         ? caches.last.location
         : LatLng(snapshot.data.latitude, snapshot.data.longitude);

@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:treasure_hunt/firebase/store.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/screens/edit_treasure_chart.dart';
@@ -21,7 +20,6 @@ class AddTreasureCaches extends HookWidget {
   Widget build(BuildContext context) {
     ValueNotifier<TreasureChart> chart = useState(getRouteArgs(context));
     final userId = context.watch<User>().uid;
-    final Location location = new Location();
 
     /// Opens a dialog for the user to commit to their changes and add clues.
     void _openNextDialog() async {
@@ -62,7 +60,7 @@ class AddTreasureCaches extends HookWidget {
     }
 
     return FutureBuilder(
-      future: getLocation(location),
+      future: getLocation(),
       builder: (context, snapshot) {
         // If the snapshot is pending return a circular progress indicator.
         if (!snapshot.hasData) {
