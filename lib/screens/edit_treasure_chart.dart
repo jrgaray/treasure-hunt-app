@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:treasure_hunt/components/dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:treasure_hunt/components/dialog_form.dart';
-import 'package:treasure_hunt/firebase/store.dart';
+import 'package:treasure_hunt/firebase/firestore.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';

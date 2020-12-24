@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:treasure_hunt/components/item_list.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-import 'package:treasure_hunt/firebase/store.dart';
+import 'package:treasure_hunt/firebase/firestore.dart';
 import 'package:treasure_hunt/screens/edit_treasure_chart.dart';
 import 'package:treasure_hunt/components/fab_selector.dart';
 import 'package:treasure_hunt/screens/treasure_hunt_create.dart';

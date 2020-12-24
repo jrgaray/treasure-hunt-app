@@ -4,10 +4,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:treasure_hunt/components/input.dart';
-import 'package:treasure_hunt/firebase/store.dart';
+import 'package:treasure_hunt/firebase/firestore.dart';
 import 'package:treasure_hunt/models/treasure_cache.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
-import 'package:treasure_hunt/utils/form_key.dart';
 
 class DialogForm extends HookWidget {
   const DialogForm({
@@ -25,6 +24,7 @@ class DialogForm extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final key = GlobalKey<FormBuilderState>();
     final userId = context.watch<User>().uid;
     return FormBuilder(
       key: key,

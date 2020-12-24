@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:treasure_hunt/firebase/store.dart';
+import 'package:treasure_hunt/firebase/firestore.dart';
 import 'package:treasure_hunt/models/treasure_chart.dart';
 import 'package:treasure_hunt/models/treasure_hunt.dart';
 import 'package:treasure_hunt/models/treasure_user.dart';

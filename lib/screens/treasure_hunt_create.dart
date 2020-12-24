@@ -7,7 +7,6 @@ import 'package:treasure_hunt/models/treasure_user.dart';
 import 'package:treasure_hunt/screens/add_treasure_caches.dart';
 import '../components/input.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:treasure_hunt/utils/form_key.dart';
 
 class TreasureChartCreate extends HookWidget {
   static const routeName = 'newTreasureChart';
@@ -18,6 +17,7 @@ class TreasureChartCreate extends HookWidget {
     final user =
         new TreasureUser.fromFirebase(context.watch<DocumentSnapshot>().data());
     final newTreasureChart = new TreasureChart(creatorId: user.uid);
+    final key = GlobalKey<FormBuilderState>();
     return Scaffold(
       appBar: AppBar(title: Text(TreasureChartCreate.title)),
       body: Container(

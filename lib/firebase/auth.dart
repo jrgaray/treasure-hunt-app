@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:treasure_hunt/firebase/storage.dart';
-import 'package:treasure_hunt/firebase/store.dart';
+import 'package:treasure_hunt/firebase/firestore.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 
