@@ -120,6 +120,7 @@ class RootScreen extends HookWidget {
                 'hunt',
                 items: hunts,
                 onTap: startHunt(hunts),
+                onLongPress: (index) => deleteHunt(index, hunts, user.uid),
               ),
             ),
             Center(

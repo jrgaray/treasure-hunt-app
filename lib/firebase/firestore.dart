@@ -37,6 +37,10 @@ Future<void> Function(String, TreasureHunt) updateTreasureHunt =
       .update(hunt.toFirebaseObject());
 };
 
+// Delete a chart.
+void deleteHunt(int index, List<TreasureHunt> hunts, String userId) async =>
+    await getCollectionFromUser(userId, "hunt").doc(hunts[index].id).delete();
+
 //////////////////////////////// CHART CRUD ////////////////////////////////
 
 // Delete a chart.
@@ -149,7 +153,7 @@ List<TreasureHunt> Function(QuerySnapshot) convertToSearch = (snapshot) {
 // Convert a snapshot to a list of Treasure Charts.
 List<TreasureChart> Function(QuerySnapshot) convertToChart =
     (QuerySnapshot snapshot) {
-  final docs = snapshot.docs ?? [];
+  final docs = snapshot?.docs ?? [];
   final data = docs.map((document) => (document.data())).toList();
   return data.map<TreasureChart>((firestoreHunt) {
     return new TreasureChart(
